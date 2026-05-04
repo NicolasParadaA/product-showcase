@@ -41,3 +41,6 @@ __screenshots__/
 #no subir firabaseConsig.js
 
 /src/firebaseConfig.js
+
+# Firebase
+.firebase/
