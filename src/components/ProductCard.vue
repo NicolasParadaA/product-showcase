@@ -1,16 +1,14 @@
 <template>
-    <div>
 
-        <div class="card mx-auto w-100">
-            <img :src="product.image" class="card-img-top" :alt="product.name">
-            <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.description }}</p>
-                <p class="card-text">Precio: {{ product.price }}</p>
-            </div>
-        </div>
-
-    </div>
+    <v-card>
+        <v-img :src="product.image" :alt="product.name" aspect-ratio="3/2" height="200px"></v-img>
+        <v-card-title>{{ product.name }}</v-card-title>
+        <v-card-text>
+            <p>{{ product.description }}</p>
+            <p>Precio: {{ product.price }}</p>
+        </v-card-text>
+    </v-card>
+    
 </template>
 
 <script setup>
@@ -26,7 +24,5 @@ const props = defineProps({
 
 
 <style lang="css" scoped>
-.card-img-top {
-    aspect-ratio: 3/2;
-}
+
 </style>

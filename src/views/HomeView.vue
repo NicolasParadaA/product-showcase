@@ -1,41 +1,39 @@
 <template>
+	<!-- cantidad de productos hecho con vuetify -->
+	<!-- <v-card max-width="300" class="mx-auto" border="2">
+		<v-card-text class="text-center">
+			<div class="text-h1 font-weight-bold">{{ productsStore.quantityProducts }}</div>
+			<div class="text-h3 font-weight-light">Cantidad productos</div>
+		</v-card-text>
+	</v-card> -->
 	<div>
-
 		<HeaderComp>Página Home</HeaderComp>
+		<main>
+			<v-container>
 
-		<!-- <main class="container">
-			<div class="card-quantity-products">
-				<p class="card-quantity-products__value">{{ productsStore.quantityProducts }}</p>
-				<p class="card-quantity-products__text">Cantidad productos</p>
-			</div>
-		</main> -->
+				<section id="cocina">
+					<h2>Productos de Cocina</h2>
+					<ListProducts :products="productsStore.filterProductsByCategory('Cocina')" />
+				</section>
 
-		<main class="container">
+				<v-divider :thickness="4" class="border-opacity-25 my-4" color="success"></v-divider>
 
-			<section id="cocina">
-				<h2>Productos de Cocina</h2>
-				<ListProducts :products="productsStore.filterProductsByCategory('Cocina')" />
-			</section>
-			
-			<v-divider :thickness="4" class="border-opacity-25" color="success"></v-divider>
+				<section id="hogar">
+					<h2>Productos de Hogar</h2>
+					<ListProducts :products="productsStore.filterProductsByCategory('Hogar')" />
+				</section>
 
-			<section id="hogar">
-				<h2>Productos de Hogar</h2>
-				<ListProducts :products="productsStore.filterProductsByCategory('Hogar')" />
-			</section>
+				<v-divider :thickness="4" class="border-opacity-25 my-4" color="success"></v-divider>
 
-			<v-divider :thickness="4" class="border-opacity-25" color="success"></v-divider>
+				<section id="jardin">
+					<h2>Productos de Jardín</h2>
+					<ListProducts :products="productsStore.filterProductsByCategory('Jardín')" />
+				</section>
 
-			<section id="jardin">
-				<h2>Productos de Jardín</h2>
-				<ListProducts :products="productsStore.filterProductsByCategory('Jardín')" />
-			</section>
-
-
+			</v-container>
 		</main>
-
-
 	</div>
+
 </template>
 
 <script setup>
@@ -53,24 +51,5 @@ onMounted(async () => {
 </script>
 
 <style lang="css" scoped>
-.card-quantity-products {
-	max-width: 300px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	border: 2px solid black;
-	padding: 1rem;
-	text-align: center;
-}
 
-.card-quantity-products__value {
-	font-size: 5rem;
-	font-weight: 700;
-}
-
-.card-quantity-products__text {
-	font-size: 3rem;
-	font-weight: 300;
-}
 </style>

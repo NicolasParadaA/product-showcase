@@ -1,9 +1,11 @@
 <template>
-    <div class="row justify-content-evenly g-3">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3" v-for="product in products" :key="product.id">
-            <ProductCard :product />
-        </div>
-    </div>
+
+    <v-row>
+        <v-col cols="12" sm="6" md="4" lg="3" v-for="product in products" :key="product.id">
+            <ProductCard :product="product" />
+        </v-col>
+    </v-row>
+
 </template>
 
 <script setup>

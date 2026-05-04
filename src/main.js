@@ -33,6 +33,9 @@ import { useUserStore } from './stores/user.store'
 const vuetify = createVuetify({
   components,
   directives,
+  theme: {
+    defaultTheme: 'light',
+  }
 })
 
 

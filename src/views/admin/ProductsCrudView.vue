@@ -1,90 +1,40 @@
 <template>
+
     <div>
-        <HeaderComp>
-            CRUD de productos
-        </HeaderComp>
-
-        <main class="container">
-
-            <div class="row justify-content-center">
-                <div class="col-12 col-sm-7 col-md-6 col-lg-5">
-                    <form @submit.prevent="createOrEdit">
+        <HeaderComp>CRUD de productos</HeaderComp>
+        <v-container>
+            <v-row justify="center">
+                <v-col cols="12" sm="7" md="6" lg="5">
+                    <v-form @submit.prevent="createOrEdit">
+                        <v-text-field v-model="name" label="Nombre" required></v-text-field>
+                        <v-text-field v-model="description" label="Descripción" required></v-text-field>
+                        <v-text-field v-model="image" label="Imagen" type="url" required></v-text-field>
+                        <v-text-field v-model="price" label="Precio" type="number" min="1" required></v-text-field>
+                        <v-select v-model="category" :items="productsStore.categories" item-title="name"
+                            item-value="name" label="Categoria" required></v-select>
                         <div>
-                            <input type="hidden" class="form-control" v-model="idProduct">
+                            <v-btn type="submit" color="primary" :disabled="!validForm" v-if="!editState"
+                                :loading="loading">Crear</v-btn>
+                            <v-btn type="button" color="secondary" :disabled="!validForm" v-if="editState"
+                                @click="cancelEdit">Cancelar edición</v-btn>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nombre: </label>
-                            <input type="text" class="form-control" required v-model="name">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción: </label>
-                            <input type="text" class="form-control" required v-model="description">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Imagen: </label>
-                            <input type="url" class="form-control" required v-model="image">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Precio: </label>
-                            <input type="number" class="form-control" min="1" required v-model="price">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Categoría: </label>
-                            <select class="form-control" required v-model="category">
-                                <option value="">Debe elegir una categoría</option>
-                                <option :value="category.name" v-for="category in productsStore.categories"
-                                    :key="category.di">{{ category.name }}</option>
-                            </select>
-                        </div>
-                        <div>
-
-                            <v-btn variant="outlined" color="primary" type="submit" :disabled="!validForm"
-                                v-if="!editState" :loading>
-                                Crear
-                            </v-btn>
-
-                            <button class="btn btn-warning me-2" type="submit" :disabled="!validForm"
-                                v-if="editState">Editar</button>
-                            <button class="btn btn-secondary" type="submit" :disabled="!validForm" v-if="editState"
-                                @click="cancelEdit">Cancelar edición</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
+                    </v-form>
+                </v-col>
+            </v-row>
             <div v-if="productsStore.quantityProducts">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">N°</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Imagen</th>
-                            <th scope="col">Precio</th>
-                            <th scope="col">Categoría</th>
-                            <th scope="col">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(product, index) in productsStore.products" :key="product.id">
-                            <th scope="row">{{ index + 1 }}</th>
-                            <td>{{ product.name }}</td>
-                            <td>
-                                <img :src="product.image" :alt="product.description" width="80">
-                            </td>
-                            <td>{{ product.price }}</td>
-                            <td>{{ product.category }}</td>
-                            <td>
-                                <button class="btn btn-warning me-2" @click="preEditProduct(product.id)">Editar</button>
-                                <button class="btn btn-danger"
-                                    @click="deleteProduct(product.id, product.name)">Eliminar</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <v-data-table :headers="headers" :items="productsStore.products">
+                    <template v-slot:item.image="{ item }">
+                        <v-img :src="item.image" :alt="item - description" width="80"></v-img>
+                    </template>
+                    <template v-slot:item.actions="{ item }">
+                        <v-btn color="warning" class="me-2" @click="preEditProduct(item.id)">Editar</v-btn>
+                        <v-btn color="error" @click="deleteProduct(item.id, item.name)">Eliminar</v-btn>
+                    </template>
+                </v-data-table>
             </div>
-        </main>
-
+        </v-container>
     </div>
+
 </template>
 
 <script setup>
@@ -92,8 +42,6 @@ document.title = "CRUD Products";
 import HeaderComp from '@/components/layouts/HeaderComp.vue';
 import { onMounted, ref, computed } from 'vue';
 import Swal from 'sweetalert2';
-
-
 import { useProductsStore } from '@/stores/products.store';
 
 const productsStore = useProductsStore();
@@ -105,11 +53,18 @@ const category = ref("");
 const description = ref("");
 const idProduct = ref("");
 
-
 //ESTADO DE EDICIÓN
 const editState = ref(false);
 const loading = ref(false);
 
+const headers = [
+    { title: 'N°', key: 'index' },
+    { title: 'Nombre', key: 'name' },
+    { title: 'Imagen', key: 'image' },
+    { title: 'Precio', key: 'price' },
+    { title: 'Categoria', key: 'category' },
+    { title: 'Acciones', key: 'actions' },
+];
 
 //COMPUTED
 const validForm = computed(() => {
@@ -129,15 +84,11 @@ const resetForm = () => {
 }
 
 const addProduct = async () => {
-
     loading.value = true;
-
     let respuesta = await productsStore.addProduct(name.value, image.value, price.value, category.value, description.value);
-
     loading.value = false;
 
     if (respuesta.success) {
-
         Swal.fire({
             position: "center",
             icon: "success",
@@ -145,9 +96,7 @@ const addProduct = async () => {
             showConfirmButton: false,
             timer: 2000
         });
-
         resetForm();
-
     } else {
         Swal.fire({
             icon: "error",
@@ -155,20 +104,25 @@ const addProduct = async () => {
             text: respuesta.error,
         });
     }
-
 };
 
 const editProduct = async () => {
     let respuesta = await productsStore.editProduct(name.value, image.value, price.value, category.value, description.value, idProduct.value);
-
     if (respuesta.success) {
-        alert(respuesta.success);
+        Swal.fire({
+            icon: "success",
+            title: respuesta.success,
+            showConfirmButton: false,
+            timer: 2000
+        });
         resetForm();
-
     } else {
-        alert(respuesta.error);
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: respuesta.error,
+        });
     }
-
 };
 
 const createOrEdit = () => {
@@ -180,7 +134,6 @@ const createOrEdit = () => {
 }
 
 const deleteProduct = async (id, name) => {
-
     Swal.fire({
         title: `Estás seguro que deseas eliminar el producto: ${name}?`,
         text: "La eliminación no se puede revertir!",
@@ -199,9 +152,13 @@ const deleteProduct = async (id, name) => {
             });
         }
     })
-    .catch((error)=> {
-        alert(error);
-    })
+        .catch((error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error,
+            });
+        })
 };
 
 const preEditProduct = async (id) => {
@@ -213,10 +170,7 @@ const preEditProduct = async (id) => {
     category.value = product.category
     description.value = product.description;
     idProduct.value = product.id;
-
-    console.log(idProduct.value);
     editState.value = true;
-
 };
 
 const cancelEdit = () => {
@@ -227,14 +181,8 @@ const cancelEdit = () => {
 onMounted(async () => {
     await productsStore.fetchProducts();
 });
-
-
 </script>
 
 <style lang="css" scoped>
-tr,
-th,
-td {
-    align-content: center;
-}
+
 </style>

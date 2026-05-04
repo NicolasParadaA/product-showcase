@@ -1,32 +1,23 @@
 <template>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card p-4">
-                    <h2 class="mb-4 text-center">Iniciar sesión</h2>
-                    <form @submit.prevent="onLogin">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input id="email" v-model="email" type="email" class="form-control" required />
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input id="password" v-model="password" type="password" class="form-control" required />
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Entrar</button>
-                            <button type="button" class="btn btn-link" @click="onReset">Recuperar contraseña</button>
-                        </div>
-                    </form>
-                    <p class="mt-3">
-                        ¿No tienes cuenta?
-                        <router-link to="/register">Regístrate</router-link>
-                    </p>
-                    <p v-if="error" class="text-danger">{{ error }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+
+<v-container>
+    <v-row justify="center" align="center" class="mt-16">
+        <v-col cols="12" md="5">
+            <v-card class="pa-4">
+                <v-card-title class="text-center mb-4">Iniciar sesión</v-card-title>
+                <v-form @submit.prevent="onLogin">
+                    <v-text-field v-model="email" label="Email" type="email" required></v-text-field>
+                    <v-text-field v-model="password" label="Contraseña" type="password" required></v-text-field>
+                    <v-btn type="submit" color="primary" block class="mb-2">Entrar</v-btn>
+                    <v-btn type="button" variant="text" @click="onReset" block>Recuperar contraseña</v-btn>
+                </v-form>
+                <p class="mt-3">¿No tienes cuenta? <router-link to="/register">Regístrate</router-link></p>
+                <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
+            </v-card>
+        </v-col>
+    </v-row>
+</v-container>
+
 </template>
 
 <script setup>
@@ -63,7 +54,4 @@ async function onReset() {
 
 <style scoped>
 
-.login-container {
-    display: none;
-}
 </style>

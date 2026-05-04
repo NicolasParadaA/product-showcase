@@ -1,33 +1,30 @@
 <template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container">
-      <a class="navbar-brand" href="#">Product ShowCase</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
-          <RouterLink to="/" class="nav-link">Inicio</RouterLink>
-          <RouterLink to="/products" class="nav-link">Productos</RouterLink>
+  <!-- envoltorio vuetify -->
+  <v-app>
+    <!-- barra de navegacion -->
+    <v-app-bar>
+      <v-app-bar-title>Product Showcase</v-app-bar-title>
+      <v-spacer></v-spacer>
 
-          <RouterLink v-if="isAdmin" to="/admin/products" class="nav-link">Crud Productos</RouterLink>
+      <v-btn to="/">Inicio</v-btn>
+      <v-btn to="/products">Productos</v-btn>
+      <v-btn v-if="isAdmin" to="/admin/products">Crud Productos</v-btn>
 
-          <template v-if="!isAuth">
-            <RouterLink to="/login" class="nav-link">Login</RouterLink>
-            <RouterLink to="/register" class="nav-link">Register</RouterLink>
-          </template>
+      <template v-if="!isAuth">
+        <v-btn to="/login">Login</v-btn>
+        <v-btn to="/register">Register</v-btn>
+      </template>
 
-          <template v-else>
-            <span class="nav-link">Hola, {{ displayName }}</span>
-            <a class="nav-link" href="#" @click.prevent="onLogout">Logout</a>
-          </template>
-        </div>
-      </div>
-    </div>
-  </nav>
+      <template v-else>
+        <span>Hola, {{ displayName }}</span>
+        <v-btn @click="onLogout">Logout</v-btn>
+      </template>
+    </v-app-bar>
+    <v-main>
 
-  <RouterView />
+      <RouterView />
+    </v-main>
+  </v-app>
 
 </template>
 
@@ -60,10 +57,4 @@ async function onLogout() {
 </script>
 
 
-<style scoped>
-.router-link-active,
-.router-link-exact-active {
-  font-weight: 600;
-}
-
-</style
+<style scoped></style
