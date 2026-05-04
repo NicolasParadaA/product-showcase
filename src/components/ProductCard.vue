@@ -1,11 +1,11 @@
 <template>
 
-    <v-card>
+    <v-card class="product-card" hover>
         <v-img :src="product.image" :alt="product.name" aspect-ratio="3/2" height="200px"></v-img>
         <v-card-title>{{ product.name }}</v-card-title>
         <v-card-text>
             <p>{{ product.description }}</p>
-            <p>Precio: {{ product.price }}</p>
+            <p class="text-h6 font-weight-bold text-primary">Precio: {{ product.price }}</p>
         </v-card-text>
     </v-card>
     
@@ -24,5 +24,13 @@ const props = defineProps({
 
 
 <style lang="css" scoped>
+
+.product-card {
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px)
+}
 
 </style>

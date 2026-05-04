@@ -8,6 +8,7 @@
 	</v-card> -->
 	<div>
 		<HeaderComp>Página Home</HeaderComp>
+		<v-progress-circular v-if="loading" indeterminate color="primary" size="64" class="ma-auto"></v-progress-circular>
 		<main>
 			<v-container>
 
@@ -40,12 +41,13 @@
 import HeaderComp from '@/components/layouts/HeaderComp.vue';
 import ListProducts from '@/components/ListProducts.vue';
 import { useProductsStore } from '@/stores/products.store';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const productsStore = useProductsStore();
-
+const loading = ref(true)
 onMounted(async () => {
 	await productsStore.fetchProducts();
+	loading.value = false
 });
 
 </script>

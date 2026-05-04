@@ -3,15 +3,15 @@
 <v-container>
     <v-row justify="center" align="center" class="mt-16">
         <v-col cols="12" md="5">
-            <v-card class="pa-4">
-                <v-card-title class="text-center mb-4">Iniciar sesión</v-card-title>
+            <v-card class="pa-6 elevation-4">
+                <v-card-title class="text-center mb-4 text-h4">Iniciar sesión</v-card-title>
                 <v-form @submit.prevent="onLogin">
-                    <v-text-field v-model="email" label="Email" type="email" required></v-text-field>
-                    <v-text-field v-model="password" label="Contraseña" type="password" required></v-text-field>
+                    <v-text-field v-model="email" label="Email" type="email" required class="mb-3"></v-text-field>
+                    <v-text-field v-model="password" label="Contraseña" type="password" required class="mb-4"></v-text-field>
                     <v-btn type="submit" color="primary" block class="mb-2">Entrar</v-btn>
                     <v-btn type="button" variant="text" @click="onReset" block>Recuperar contraseña</v-btn>
                 </v-form>
-                <p class="mt-3">¿No tienes cuenta? <router-link to="/register">Regístrate</router-link></p>
+                <p class="mt-4 text-center">¿No tienes cuenta? <router-link to="/register">Regístrate</router-link></p>
                 <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
             </v-card>
         </v-col>
