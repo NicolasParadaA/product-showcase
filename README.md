@@ -141,10 +141,16 @@ El proyecto está desplegado en Firebase Hosting:
 
 - **URL de producción**: https://product-showcase-5a774.web.app
 
-Para hacer deploy a Firebase:
+### Prerrequisitos
+
+- Firebase CLI instalado (`npm install -g firebase-tools`)
+- Autenticado (`firebase login`)
+- Proyecto vinculado (`.firebaserc` ya está configurado)
+
+### Desplegar
 
 ```bash
-firebase deploy
+pnpm deploy
 ```
 
 ## 📄 Licencia
