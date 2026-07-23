@@ -22,17 +22,17 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresRole: 'admin' },
     },
     {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/LoginView.vue'),
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('../views/RegisterView.vue'),
-  },
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
+    },
   ],
-});
+})
 
 router.beforeEach(async (to, _from) => {
   const requiresAuth = to.meta?.requiresAuth
@@ -46,7 +46,7 @@ router.beforeEach(async (to, _from) => {
       unsubscribe()
       resolve(u)
     })
-  });
+  })
 
   // ensure store has profile data when user is logged in
   if (firebaseUser && !userStore.user) {
@@ -65,7 +65,6 @@ router.beforeEach(async (to, _from) => {
   }
 
   return true
-});
-
+})
 
 export default router

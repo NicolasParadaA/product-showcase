@@ -8,13 +8,7 @@
 	</v-card> -->
   <div>
     <HeaderComp>Página Home</HeaderComp>
-    <v-progress-circular
-      v-if="loading"
-      indeterminate
-      color="primary"
-      size="64"
-      class="ma-auto"
-    />
+    <v-progress-circular v-if="loading" indeterminate color="primary" size="64" class="ma-auto" />
     <main>
       <v-container>
         <section id="cocina">
@@ -22,22 +16,14 @@
           <ListProducts :products="productsStore.filterProductsByCategory('Cocina')" />
         </section>
 
-        <v-divider
-          :thickness="4"
-          class="border-opacity-25 my-4"
-          color="success"
-        />
+        <v-divider :thickness="4" class="border-opacity-25 my-4" color="success" />
 
         <section id="hogar">
           <h2>Productos de Hogar</h2>
           <ListProducts :products="productsStore.filterProductsByCategory('Hogar')" />
         </section>
 
-        <v-divider
-          :thickness="4"
-          class="border-opacity-25 my-4"
-          color="success"
-        />
+        <v-divider :thickness="4" class="border-opacity-25 my-4" color="success" />
 
         <section id="jardin">
           <h2>Productos de Jardín</h2>
@@ -49,20 +35,17 @@
 </template>
 
 <script setup>
-import HeaderComp from '@/components/layouts/HeaderComp.vue';
-import ListProducts from '@/components/ListProducts.vue';
-import { useProductsStore } from '@/stores/products.store';
-import { onMounted, ref } from 'vue';
+import HeaderComp from '@/components/layouts/HeaderComp.vue'
+import ListProducts from '@/components/ListProducts.vue'
+import { useProductsStore } from '@/stores/products.store'
+import { onMounted, ref } from 'vue'
 
-const productsStore = useProductsStore();
+const productsStore = useProductsStore()
 const loading = ref(true)
 onMounted(async () => {
-	await productsStore.fetchProducts();
-	loading.value = false
-});
-
+  await productsStore.fetchProducts()
+  loading.value = false
+})
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>

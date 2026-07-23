@@ -12,12 +12,12 @@ export const useProductsStore = defineStore('products', () => {
     { id: 1, name: 'Hogar' },
     { id: 2, name: 'Cocina' },
     { id: 3, name: 'Jardín' },
-  ]);
+  ])
 
-  const products = ref([]);
+  const products = ref([])
 
   //GETTERS -> PROPIEDADES COMPUTADAS
-  const quantityProducts = computed(() => products.value.length);
+  const quantityProducts = computed(() => products.value.length)
 
   //MÉTODOS -> ACTIONS
 
@@ -85,13 +85,11 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
-
-  function filterProductsByCategory(category){
-    return products.value.filter((product) => product.category.toLowerCase() === category.toLowerCase())
-  };
-
-
-  
+  function filterProductsByCategory(category) {
+    return products.value.filter(
+      (product) => product.category.toLowerCase() === category.toLowerCase(),
+    )
+  }
 
   //EXPORTACIÓN DE LO QUE QUEREMOS DEJAR PÚBLICO
   return {

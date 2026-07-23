@@ -29,15 +29,13 @@ import { auth } from './firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from './stores/user.store'
 
-
 const vuetify = createVuetify({
   components,
   directives,
   theme: {
     defaultTheme: 'light',
-  }
+  },
 })
-
 
 const app = createApp(App)
 
@@ -47,7 +45,6 @@ app.use(vuetify)
 
 const userStore = useUserStore()
 let mounted = false
-
 
 onAuthStateChanged(auth, async (firebaseUser) => {
   await userStore.setUserFromAuth(firebaseUser)

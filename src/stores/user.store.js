@@ -4,15 +4,13 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/firebaseConfig.js'
 
 export const useUserStore = defineStore('user', () => {
-	//ESTADOS
+  //ESTADOS
   const user = ref(null)
 
-	//PROPIEDADES COMPUTADAS
+  //PROPIEDADES COMPUTADAS
   const isAuthenticated = computed(() => !!user.value)
 
-
-
-	//ACTIONS
+  //ACTIONS
   async function setUserFromAuth(firebaseUser) {
     if (!firebaseUser) {
       user.value = null
