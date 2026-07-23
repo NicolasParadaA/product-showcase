@@ -12,7 +12,7 @@
                     "test:e2e":  "start-server-and-test preview http://localhost:4173 \u0027cypress run --e2e\u0027",
                     "test:e2e:dev":  "start-server-and-test \u0027vite dev --port 4173\u0027 http://localhost:4173 \u0027cypress open --e2e\u0027",
                     "format":  "prettier --write --experimental-cli src/",
-                    "deploy":  "pnpm build && gh-pages -d dist"
+                    "deploy":  "firebase deploy --only hosting"
                 },
     "dependencies":  {
                          "@fontsource/roboto":  "^5.2.10",
@@ -27,7 +27,7 @@
                             "@vitejs/plugin-vue":  "^6.0.4",
                             "@vue/test-utils":  "^2.4.6",
                             "cypress":  "^15.10.0",
-                            "gh-pages":  "^6.3.0",
+                            
                             "jsdom":  "^28.1.0",
                             "prettier":  "3.8.1",
                             "start-server-and-test":  "^2.1.5",
