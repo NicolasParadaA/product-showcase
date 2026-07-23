@@ -16,13 +16,23 @@
         </p>
         <p>
           Buscar:
-          <v-text-field v-model="filterName" label="Buscar" />
+          <v-text-field
+            v-model="filterName"
+            label="Buscar"
+          />
         </p>
         <p>Cantidad de productos encontrados: {{ quantityProducts }}</p>
       </div>
       <section>
         <v-row>
-          <v-col v-for="product in filterProducts" :key="product.id" cols="12" sm="6" md="4" lg="3">
+          <v-col
+            v-for="product in filterProducts"
+            :key="product.id"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
             <ProductCard :product="product" />
           </v-col>
         </v-row>

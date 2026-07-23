@@ -1,6 +1,13 @@
 <template>
   <v-row>
-    <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
+    <v-col
+      v-for="product in products"
+      :key="product.id"
+      cols="12"
+      sm="6"
+      md="4"
+      lg="3"
+    >
       <ProductCard :product="product" />
     </v-col>
   </v-row>
