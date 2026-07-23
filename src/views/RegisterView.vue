@@ -1,24 +1,68 @@
 <template>
-
-<v-container>
+  <v-container>
     <v-row justify="center">
-        <v-col cols="12" md="6">
-            <v-card class="pa-6 elevation-4">
-                <v-card-title class="text-center mb-4 text-h4">Registrar cuenta</v-card-title>
-                <v-form @submit.prevent="onRegister">
-                    <v-text-field v-model="firstname" label="Nombre" required class="mb-3"></v-text-field>
-                    <v-text-field v-model="lastname" label="Apellido" required class="mb-3"></v-text-field>
-                    <v-text-field v-model="email" type="email" label="Email" required class="mb-3"></v-text-field>
-                    <v-text-field v-model="password" type="password" label="Contraseña" required class="mb-3"></v-text-field>
-                    <v-text-field v-model="confirm" type="password" label="Confirmar Contraseña" required class="mb-4"></v-text-field>
-                    <v-btn type="submit" color="primary" size="large" block>Crear cuenta</v-btn>
-                </v-form>
-                <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
-            </v-card>
-        </v-col>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-card class="pa-6 elevation-4">
+          <v-card-title class="text-center mb-4 text-h4">
+            Registrar cuenta
+          </v-card-title>
+          <v-form @submit.prevent="onRegister">
+            <v-text-field
+              v-model="firstname"
+              label="Nombre"
+              required
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="lastname"
+              label="Apellido"
+              required
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="email"
+              type="email"
+              label="Email"
+              required
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              label="Contraseña"
+              required
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="confirm"
+              type="password"
+              label="Confirmar Contraseña"
+              required
+              class="mb-4"
+            />
+            <v-btn
+              type="submit"
+              color="primary"
+              size="large"
+              block
+            >
+              Crear cuenta
+            </v-btn>
+          </v-form>
+          <v-alert
+            v-if="error"
+            type="error"
+            class="mt-3"
+          >
+            {{ error }}
+          </v-alert>
+        </v-card>
+      </v-col>
     </v-row>
-</v-container>
-
+  </v-container>
 </template>
 
 <script setup>

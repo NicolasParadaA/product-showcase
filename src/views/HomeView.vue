@@ -1,40 +1,51 @@
 <template>
-	<!-- cantidad de productos hecho con vuetify -->
-	<!-- <v-card max-width="300" class="mx-auto" border="2">
+  <!-- cantidad de productos hecho con vuetify -->
+  <!-- <v-card max-width="300" class="mx-auto" border="2">
 		<v-card-text class="text-center">
 			<div class="text-h1 font-weight-bold">{{ productsStore.quantityProducts }}</div>
 			<div class="text-h3 font-weight-light">Cantidad productos</div>
 		</v-card-text>
 	</v-card> -->
-	<div>
-		<HeaderComp>Página Home</HeaderComp>
-		<v-progress-circular v-if="loading" indeterminate color="primary" size="64" class="ma-auto"></v-progress-circular>
-		<main>
-			<v-container>
+  <div>
+    <HeaderComp>Página Home</HeaderComp>
+    <v-progress-circular
+      v-if="loading"
+      indeterminate
+      color="primary"
+      size="64"
+      class="ma-auto"
+    />
+    <main>
+      <v-container>
+        <section id="cocina">
+          <h2>Productos de Cocina</h2>
+          <ListProducts :products="productsStore.filterProductsByCategory('Cocina')" />
+        </section>
 
-				<section id="cocina">
-					<h2>Productos de Cocina</h2>
-					<ListProducts :products="productsStore.filterProductsByCategory('Cocina')" />
-				</section>
+        <v-divider
+          :thickness="4"
+          class="border-opacity-25 my-4"
+          color="success"
+        />
 
-				<v-divider :thickness="4" class="border-opacity-25 my-4" color="success"></v-divider>
+        <section id="hogar">
+          <h2>Productos de Hogar</h2>
+          <ListProducts :products="productsStore.filterProductsByCategory('Hogar')" />
+        </section>
 
-				<section id="hogar">
-					<h2>Productos de Hogar</h2>
-					<ListProducts :products="productsStore.filterProductsByCategory('Hogar')" />
-				</section>
+        <v-divider
+          :thickness="4"
+          class="border-opacity-25 my-4"
+          color="success"
+        />
 
-				<v-divider :thickness="4" class="border-opacity-25 my-4" color="success"></v-divider>
-
-				<section id="jardin">
-					<h2>Productos de Jardín</h2>
-					<ListProducts :products="productsStore.filterProductsByCategory('Jardín')" />
-				</section>
-
-			</v-container>
-		</main>
-	</div>
-
+        <section id="jardin">
+          <h2>Productos de Jardín</h2>
+          <ListProducts :products="productsStore.filterProductsByCategory('Jardín')" />
+        </section>
+      </v-container>
+    </main>
+  </div>
 </template>
 
 <script setup>

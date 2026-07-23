@@ -1,40 +1,100 @@
 <template>
-
-    <div>
-        <HeaderComp>CRUD de productos</HeaderComp>
-        <v-container>
-            <v-row justify="center">
-                <v-col cols="12" sm="7" md="6" lg="5">
-                    <v-form @submit.prevent="createOrEdit">
-                        <v-text-field v-model="name" label="Nombre" required></v-text-field>
-                        <v-text-field v-model="description" label="Descripción" required></v-text-field>
-                        <v-text-field v-model="image" label="Imagen" type="url" required></v-text-field>
-                        <v-text-field v-model="price" label="Precio" type="number" min="1" required></v-text-field>
-                        <v-select v-model="category" :items="productsStore.categories" item-title="name"
-                            item-value="name" label="Categoria" required></v-select>
-                        <div>
-                            <v-btn type="submit" color="primary" :disabled="!validForm" v-if="!editState"
-                                :loading="loading">Crear</v-btn>
-                            <v-btn type="button" color="secondary" :disabled="!validForm" v-if="editState"
-                                @click="cancelEdit">Cancelar edición</v-btn>
-                        </div>
-                    </v-form>
-                </v-col>
-            </v-row>
-            <div v-if="productsStore.quantityProducts">
-                <v-data-table :headers="headers" :items="productsStore.products">
-                    <template v-slot:item.image="{ item }">
-                        <v-img :src="item.image" :alt="item - description" width="80"></v-img>
-                    </template>
-                    <template v-slot:item.actions="{ item }">
-                        <v-btn color="warning" class="me-2" @click="preEditProduct(item.id)">Editar</v-btn>
-                        <v-btn color="error" @click="deleteProduct(item.id, item.name)">Eliminar</v-btn>
-                    </template>
-                </v-data-table>
+  <div>
+    <HeaderComp>CRUD de productos</HeaderComp>
+    <v-container>
+      <v-row justify="center">
+        <v-col
+          cols="12"
+          sm="7"
+          md="6"
+          lg="5"
+        >
+          <v-form @submit.prevent="createOrEdit">
+            <v-text-field
+              v-model="name"
+              label="Nombre"
+              required
+            />
+            <v-text-field
+              v-model="description"
+              label="Descripción"
+              required
+            />
+            <v-text-field
+              v-model="image"
+              label="Imagen"
+              type="url"
+              required
+            />
+            <v-text-field
+              v-model="price"
+              label="Precio"
+              type="number"
+              min="1"
+              required
+            />
+            <v-select
+              v-model="category"
+              :items="productsStore.categories"
+              item-title="name"
+              item-value="name"
+              label="Categoria"
+              required
+            />
+            <div>
+              <v-btn
+                v-if="!editState"
+                type="submit"
+                color="primary"
+                :disabled="!validForm"
+                :loading="loading"
+              >
+                Crear
+              </v-btn>
+              <v-btn
+                v-if="editState"
+                type="button"
+                color="secondary"
+                :disabled="!validForm"
+                @click="cancelEdit"
+              >
+                Cancelar edición
+              </v-btn>
             </div>
-        </v-container>
-    </div>
-
+          </v-form>
+        </v-col>
+      </v-row>
+      <div v-if="productsStore.quantityProducts">
+        <v-data-table
+          :headers="headers"
+          :items="productsStore.products"
+        >
+          <template #item.image="{ item }">
+            <v-img
+              :src="item.image"
+              :alt="item - description"
+              width="80"
+            />
+          </template>
+          <template #item.actions="{ item }">
+            <v-btn
+              color="warning"
+              class="me-2"
+              @click="preEditProduct(item.id)"
+            >
+              Editar
+            </v-btn>
+            <v-btn
+              color="error"
+              @click="deleteProduct(item.id, item.name)"
+            >
+              Eliminar
+            </v-btn>
+          </template>
+        </v-data-table>
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script setup>

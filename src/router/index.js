@@ -34,7 +34,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to, _from) => {
   const requiresAuth = to.meta?.requiresAuth
   const requiresRole = to.meta?.requiresRole
 

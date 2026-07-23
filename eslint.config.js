@@ -19,6 +19,7 @@ export default [
       'vue/multi-word-component-names': 'off',
       'vue/no-unused-components': 'warn',
       'vue/no-multiple-template-root': 'off',
+      'vue/valid-v-slot': 'off',
     },
   },
   {

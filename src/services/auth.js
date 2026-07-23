@@ -20,16 +20,17 @@ export async function register(email, password, profile = {}) {
       email,
       createdAt: new Date().toISOString(),
     })
-  } catch (e) {
+  } catch {
     // Firestore write failed (probably due to rules).
     // remove the partially created auth user to avoid orphan accounts.
     try {
       await userCredential.user.delete()
-    } catch (_) {
+    } catch {
       console.error('Failed to delete auth user after profile failure')
     }
     throw new Error(
       'El perfil de usuario no se pudo guardar en Firestore. Revisa las reglas de seguridad.',
+      { cause: 'firestore-write-failed' },
     )
   }
   return userCredential.user

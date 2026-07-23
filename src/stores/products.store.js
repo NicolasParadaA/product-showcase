@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 import { db } from '@/firebaseConfig.js'
 
-import { collection, getDoc, addDoc, updateDoc, deleteDoc, doc, getDocs } from 'firebase/firestore'
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs } from 'firebase/firestore'
 
 export const useProductsStore = defineStore('products', () => {
   //ESTADOS
@@ -22,7 +22,7 @@ export const useProductsStore = defineStore('products', () => {
   //MÉTODOS -> ACTIONS
 
   function findProduct(id) {
-    return products.value.find((p) => p.id == id)
+    return products.value.find((p) => p.id === id)
   }
 
   //MÉTODOS CRUD FIRESTORE
@@ -56,7 +56,7 @@ export const useProductsStore = defineStore('products', () => {
     try {
       await deleteDoc(doc(db, 'products', id))
 
-      let indexProduct = products.value.findIndex((p) => p.id == id)
+      let indexProduct = products.value.findIndex((p) => p.id === id)
       products.value.splice(indexProduct, 1)
 
       return { success: `Producto '${name}', eliminado correctamente.` }
@@ -73,7 +73,7 @@ export const useProductsStore = defineStore('products', () => {
 
       await updateDoc(doc(db, 'products', id), data)
 
-      let indexProduct = products.value.findIndex((p) => p.id == id)
+      let indexProduct = products.value.findIndex((p) => p.id === id)
 
       products.value[indexProduct] = { ...data, id }
 
@@ -87,7 +87,7 @@ export const useProductsStore = defineStore('products', () => {
 
 
   function filterProductsByCategory(category){
-    return products.value.filter((product) => product.category.toLowerCase() == category.toLowerCase())
+    return products.value.filter((product) => product.category.toLowerCase() === category.toLowerCase())
   };
 
 
