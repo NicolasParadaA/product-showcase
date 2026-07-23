@@ -10,6 +10,16 @@ export default mergeConfig(
       exclude: [...configDefaults.exclude, 'e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
       include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}', 'tests/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'lcov'],
+        thresholds: {
+          statements: 40,
+          branches: 30,
+          functions: 40,
+          lines: 40,
+        },
+      },
     },
   }),
 )
