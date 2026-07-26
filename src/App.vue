@@ -132,5 +132,3 @@ async function onLogout() {
   }
 }
 </script>
-
-<style scoped></style>

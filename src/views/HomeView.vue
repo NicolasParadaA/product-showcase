@@ -1,11 +1,4 @@
 <template>
-  <!-- cantidad de productos hecho con vuetify -->
-  <!-- <v-card max-width="300" class="mx-auto" border="2">
-		<v-card-text class="text-center">
-			<div class="text-h1 font-weight-bold">{{ productsStore.quantityProducts }}</div>
-			<div class="text-h3 font-weight-light">Cantidad productos</div>
-		</v-card-text>
-	</v-card> -->
   <div>
     <v-progress-circular
       v-if="loading"
@@ -60,4 +53,3 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="css" scoped></style>

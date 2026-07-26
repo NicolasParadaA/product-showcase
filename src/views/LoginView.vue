@@ -166,4 +166,3 @@ async function onReset() {
 }
 </script>
 
-<style scoped></style>

@@ -32,8 +32,7 @@ export const useProductsStore = defineStore('products', () => {
 
       products.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
     } catch (error) {
-      console.log(error)
-      console.log('Error al cargar los datos de firebase...')
+      console.error(error, 'Error al cargar los datos de firebase...')
     }
   }
 
@@ -46,7 +45,7 @@ export const useProductsStore = defineStore('products', () => {
 
       return { success: 'Producto creado con éxito.' }
     } catch (error) {
-      console.log(error)
+      console.error(error)
 
       return { error: 'Error al intentar agregar el producto.' }
     }
@@ -61,7 +60,7 @@ export const useProductsStore = defineStore('products', () => {
 
       return { success: `Producto '${name}', eliminado correctamente.` }
     } catch (error) {
-      console.log(error)
+      console.error(error)
 
       return { error: `Error al intentar eliminar el producto ${name}.` }
     }
@@ -79,7 +78,7 @@ export const useProductsStore = defineStore('products', () => {
 
       return { success: 'Producto editado con éxito.' }
     } catch (error) {
-      console.log(error)
+      console.error(error)
 
       return { error: 'Error al intentar editar el producto.' }
     }
