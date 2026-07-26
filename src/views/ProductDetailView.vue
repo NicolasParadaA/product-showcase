@@ -3,7 +3,7 @@
     <v-btn
       variant="outlined"
       color="primary"
-      to="/products"
+      :to="backRoute"
       class="mb-4"
     >
       ← Volver a Productos
@@ -56,7 +56,7 @@
         Producto no encontrado
       </h2>
       <v-btn
-        to="/products"
+        :to="backRoute"
         variant="outlined"
         color="primary"
         class="mt-4"
@@ -69,13 +69,33 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products.store'
 
 const route = useRoute()
+const router = useRouter()
 const productsStore = useProductsStore()
 
 const product = computed(() => productsStore.findProduct(route.params.id))
+
+const backRoute = computed(() => {
+  const from = route.query.from || 'products'
+  if (from === 'home') {
+    return '/'
+  }
+  const query = {}
+  if (route.query.filterCategory) {
+    query.filterCategory = route.query.filterCategory
+  }
+  if (route.query.filterName) {
+    query.filterName = route.query.filterName
+  }
+  return { path: '/products', query }
+})
+
+function goBack() {
+  router.push(backRoute.value)
+}
 
 onMounted(async () => {
   if (productsStore.products.length === 0) {

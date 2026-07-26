@@ -11,7 +11,7 @@
       <v-container>
         <section id="cocina">
           <h2>Productos de Cocina</h2>
-          <ListProducts :products="productsStore.filterProductsByCategory('Cocina')" />
+          <ListProducts :products="productsStore.filterProductsByCategory('Cocina')" from="home" />
         </section>
 
         <v-divider
@@ -22,7 +22,7 @@
 
         <section id="hogar">
           <h2>Productos de Hogar</h2>
-          <ListProducts :products="productsStore.filterProductsByCategory('Hogar')" />
+          <ListProducts :products="productsStore.filterProductsByCategory('Hogar')" from="home" />
         </section>
 
         <v-divider
@@ -33,7 +33,7 @@
 
         <section id="jardin">
           <h2>Productos de Jardín</h2>
-          <ListProducts :products="productsStore.filterProductsByCategory('Jardín')" />
+          <ListProducts :products="productsStore.filterProductsByCategory('Jardín')" from="home" />
         </section>
       </v-container>
     </main>

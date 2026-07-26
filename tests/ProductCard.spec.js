@@ -82,7 +82,7 @@ describe('ProductCard - clickable', () => {
       global: { plugins: [pinia, router, vuetify] },
     })
 
-    const link = wrapper.find('a[href="/products/abc"]')
+    const link = wrapper.find('a[href^="/products/abc"]')
     expect(link.exists()).toBe(true)
   })
 })

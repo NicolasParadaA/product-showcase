@@ -70,6 +70,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '../services/auth'
+import { translateAuthError } from '@/utils/auth-errors.js'
 
 const router = useRouter()
 const firstname = ref('')
@@ -94,7 +95,7 @@ async function onRegister() {
     })
     router.push('/')
   } catch (e) {
-    error.value = e.message || 'Error al crear cuenta'
+    error.value = translateAuthError(e.code) || 'Error al crear cuenta'
   } finally {
     loading.value = false
   }

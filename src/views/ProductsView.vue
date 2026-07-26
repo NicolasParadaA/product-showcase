@@ -44,7 +44,14 @@
             md="4"
             lg="3"
           >
-            <ProductCard :product="product" />
+            <ProductCard
+              :product="product"
+              from="products"
+              :from-query="{
+                ...(filterCategory ? { filterCategory } : {}),
+                ...(filterName ? { filterName } : {}),
+              }"
+            />
           </v-col>
         </v-row>
       </section>
@@ -54,18 +61,20 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import ProductCard from '@/components/ProductCard.vue'
 import { normalizeText } from '@/utils/search.js'
 
 import { useProductsStore } from '@/stores/products.store'
 
+const route = useRoute()
 const productsStore = useProductsStore()
 
 const products = ref([])
 const loadingProducts = ref(true)
 
-const filterCategory = ref('')
-const filterName = ref('')
+const filterCategory = ref(route.query.filterCategory || '')
+const filterName = ref(route.query.filterName || '')
 
 const filterProducts = computed(() => {
   let productsFiltered = products.value

@@ -119,6 +119,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { login, sendPasswordReset } from '../services/auth'
+import { translateAuthError } from '@/utils/auth-errors.js'
 
 const router = useRouter()
 const email = ref('')
@@ -145,7 +146,7 @@ async function onLogin() {
     await login(email.value, password.value)
     router.push('/')
   } catch (e) {
-    error.value = e.message || 'Error en el inicio de sesión'
+    error.value = translateAuthError(e.code) || 'Error en el inicio de sesión'
   } finally {
     loading.value = false
   }
@@ -159,7 +160,7 @@ async function onReset() {
     await sendPasswordReset(resetEmail.value)
     resetSuccess.value = true
   } catch (e) {
-    resetError.value = e.message || 'Error al enviar correo'
+    resetError.value = translateAuthError(e.code) || 'Error al enviar correo'
   } finally {
     resetLoading.value = false
   }

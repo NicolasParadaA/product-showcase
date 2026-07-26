@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="`/products/${product.id}`"
+    :to="detailRoute"
     class="text-decoration-none"
   >
     <v-card
@@ -26,17 +26,30 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   product: {
     type: Object,
     required: true,
   },
+  from: {
+    type: String,
+    default: 'products',
+  },
+  fromQuery: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
 const fallback = 'https://placehold.co/300x200?text=Sin+imagen'
 const imgSrc = ref(props.product.image)
+
+const detailRoute = computed(() => {
+  const query = { from: props.from, ...props.fromQuery }
+  return { path: `/products/${props.product.id}`, query }
+})
 
 function onImgError() {
   imgSrc.value = fallback
