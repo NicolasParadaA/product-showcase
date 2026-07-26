@@ -98,6 +98,13 @@
     <v-main>
       <RouterView />
     </v-main>
+    <v-footer class="pa-4 text-center">
+      <v-col>
+        <span class="text-body-2 text-medium-emphasis">
+          Product Showcase &copy; {{ new Date().getFullYear() }}
+        </span>
+      </v-col>
+    </v-footer>
   </v-app>
 </template>
 

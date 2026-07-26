@@ -9,32 +9,33 @@
     />
     <main>
       <v-container>
-        <section id="cocina">
-          <h2>Productos de Cocina</h2>
-          <ListProducts :products="productsStore.filterProductsByCategory('Cocina')" from="home" />
+        <!-- Welcome section -->
+        <section class="text-center py-6">
+          <h1 class="text-h4 font-weight-bold mb-2">Bienvenido a Product Showcase</h1>
+          <p class="text-subtitle-1 text-medium-emphasis">
+            Descubre nuestra selección de productos para cocina, hogar y jardín.
+          </p>
         </section>
 
         <v-divider
-          :thickness="4"
+          :thickness="2"
           class="border-opacity-25 my-4"
-          color="success"
+          color="primary"
         />
 
-        <section id="hogar">
-          <h2>Productos de Hogar</h2>
-          <ListProducts :products="productsStore.filterProductsByCategory('Hogar')" from="home" />
-        </section>
+        <template v-for="(category, index) in categoriesStore.categories" :key="category.id">
+          <section :id="category.name.toLowerCase()">
+            <h2>Productos de {{ category.name }}</h2>
+            <ListProducts :products="productsStore.filterProductsByCategory(category.name)" from="home" />
+          </section>
 
-        <v-divider
-          :thickness="4"
-          class="border-opacity-25 my-4"
-          color="success"
-        />
-
-        <section id="jardin">
-          <h2>Productos de Jardín</h2>
-          <ListProducts :products="productsStore.filterProductsByCategory('Jardín')" from="home" />
-        </section>
+          <v-divider
+            v-if="index < categoriesStore.categories.length - 1"
+            :thickness="4"
+            class="border-opacity-25 my-4"
+            color="success"
+          />
+        </template>
       </v-container>
     </main>
   </div>
@@ -43,12 +44,18 @@
 <script setup>
 import ListProducts from '@/components/ListProducts.vue'
 import { useProductsStore } from '@/stores/products.store'
+import { useCategoriesStore } from '@/stores/categories.store'
 import { onMounted, ref } from 'vue'
 
 const productsStore = useProductsStore()
+const categoriesStore = useCategoriesStore()
 const loading = ref(true)
+
 onMounted(async () => {
-  await productsStore.fetchProducts()
+  await Promise.all([
+    productsStore.fetchProducts(),
+    categoriesStore.fetchCategories(),
+  ])
   loading.value = false
 })
 </script>

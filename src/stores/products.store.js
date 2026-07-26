@@ -8,12 +8,6 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs } from 'firebase
 export const useProductsStore = defineStore('products', () => {
   //ESTADOS
 
-  const categories = ref([
-    { id: 1, name: 'Hogar' },
-    { id: 2, name: 'Cocina' },
-    { id: 3, name: 'Jardín' },
-  ])
-
   const products = ref([])
 
   //GETTERS -> PROPIEDADES COMPUTADAS
@@ -92,7 +86,6 @@ export const useProductsStore = defineStore('products', () => {
 
   //EXPORTACIÓN DE LO QUE QUEREMOS DEJAR PÚBLICO
   return {
-    categories,
     products,
     quantityProducts,
     filterProductsByCategory,

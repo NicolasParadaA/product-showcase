@@ -34,7 +34,7 @@
             />
             <v-select
               v-model="category"
-              :items="productsStore.categories"
+              :items="categoriesStore.categories"
               item-title="name"
               item-value="name"
               label="Categoria"
@@ -92,6 +92,43 @@
           </template>
         </v-data-table>
       </div>
+
+      <!-- Category management -->
+      <v-card class="mt-6">
+        <v-card-title>Gestionar Categorías</v-card-title>
+        <v-card-text>
+          <div class="d-flex flex-wrap ga-2 mb-4">
+            <v-chip
+              v-for="cat in categoriesStore.categories"
+              :key="cat.id"
+              closable
+              @click:close="deleteCategory(cat.id, cat.name)"
+            >
+              {{ cat.name }}
+            </v-chip>
+            <span v-if="!categoriesStore.categories.length" class="text-medium-emphasis">
+              No hay categorías registradas.
+            </span>
+          </div>
+          <v-form @submit.prevent="addCategory">
+            <v-text-field
+              v-model="newCategoryName"
+              label="Nueva categoría"
+              density="compact"
+              class="mb-2"
+              style="max-width: 300px"
+            />
+            <v-btn
+              type="submit"
+              color="primary"
+              variant="tonal"
+              :disabled="!newCategoryName.trim()"
+            >
+              Agregar
+            </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
     </v-container>
   </div>
 </template>
@@ -101,8 +138,10 @@ document.title = 'CRUD Products'
 import { onMounted, ref, computed } from 'vue'
 import Swal from 'sweetalert2'
 import { useProductsStore } from '@/stores/products.store'
+import { useCategoriesStore } from '@/stores/categories.store'
 
 const productsStore = useProductsStore()
+const categoriesStore = useCategoriesStore()
 
 const name = ref('')
 const image = ref('https://placehold.co/300x200.png')
@@ -110,6 +149,7 @@ const price = ref(1)
 const category = ref('')
 const description = ref('')
 const idProduct = ref('')
+const newCategoryName = ref('')
 
 //ESTADO DE EDICIÓN
 const editState = ref(false)
@@ -258,8 +298,56 @@ const cancelEdit = () => {
   resetForm()
 }
 
+// Category management
+const addCategory = async () => {
+  const name = newCategoryName.value.trim()
+  if (!name) return
+
+  const result = await categoriesStore.addCategory(name)
+  if (result.success) {
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: result.success,
+      showConfirmButton: false,
+      timer: 2000,
+    })
+    newCategoryName.value = ''
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: result.error,
+    })
+  }
+}
+
+const deleteCategory = async (id, name) => {
+  Swal.fire({
+    title: `¿Eliminar categoría "${name}"?`,
+    text: 'Esta acción no se puede revertir.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const respuesta = await categoriesStore.deleteCategory(id)
+      Swal.fire({
+        title: 'Eliminada',
+        text: respuesta.success,
+        icon: 'success',
+      })
+    }
+  })
+}
+
 onMounted(async () => {
-  await productsStore.fetchProducts()
+  await Promise.all([
+    productsStore.fetchProducts(),
+    categoriesStore.fetchCategories(),
+  ])
 })
 </script>
 
