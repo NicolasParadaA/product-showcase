@@ -29,11 +29,16 @@ import { auth } from './firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from './stores/user.store'
 
+// Resolve default theme from localStorage or system preference
+const savedTheme = localStorage.getItem('theme')
+const defaultTheme = savedTheme
+  || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+
 const vuetify = createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'light',
+    defaultTheme,
   },
 })
 

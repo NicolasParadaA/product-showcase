@@ -10,6 +10,20 @@ export default mergeConfig(
       exclude: [...configDefaults.exclude, 'e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
       include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}', 'tests/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+      setupFiles: ['./tests/setup.js'],
+      css: false,
+      server: {
+        deps: {
+          inline: ['vuetify'],
+        },
+      },
+      deps: {
+        optimizer: {
+          ssr: {
+            include: ['vuetify'],
+          },
+        },
+      },
       coverage: {
         provider: 'v8',
         reporter: ['text', 'lcov'],

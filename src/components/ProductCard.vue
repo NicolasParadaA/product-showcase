@@ -1,23 +1,28 @@
 <template>
-  <v-card
-    class="product-card"
-    hover
+  <router-link
+    :to="`/products/${product.id}`"
+    class="text-decoration-none"
   >
-    <v-img
-      :src="imgSrc"
-      :alt="product.name"
-      aspect-ratio="3/2"
-      height="200px"
-      @error="onImgError"
-    />
-    <v-card-title>{{ product.name }}</v-card-title>
-    <v-card-text>
-      <p>{{ product.description }}</p>
-      <p class="text-h6 font-weight-bold text-primary">
-        Precio: {{ product.price }}
-      </p>
-    </v-card-text>
-  </v-card>
+    <v-card
+      class="product-card"
+      hover
+    >
+      <v-img
+        :src="imgSrc"
+        :alt="product.name"
+        aspect-ratio="3/2"
+        height="200px"
+        @error="onImgError"
+      />
+      <v-card-title>{{ product.name }}</v-card-title>
+      <v-card-text>
+        <p>{{ product.description }}</p>
+        <p class="text-h6 font-weight-bold text-primary">
+          Precio: {{ product.price }}
+        </p>
+      </v-card-text>
+    </v-card>
+  </router-link>
 </template>
 
 <script setup>
