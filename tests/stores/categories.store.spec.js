@@ -89,7 +89,7 @@ describe('categories store', () => {
     expect(result).toEqual({ success: "Categoría 'Cocina', eliminada correctamente." })
   })
 
-  it('should handle fetchCategories error gracefully', async () => {
+  it('should handle fetchCategories error gracefully with fallback defaults', async () => {
     const { getDocs } = await import('firebase/firestore')
 
     // Arrange
@@ -99,13 +99,15 @@ describe('categories store', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     await store.fetchCategories()
 
-    // Assert
-    expect(store.categories).toHaveLength(0)
+    // Assert — falls back to default categories
+    expect(store.categories).toHaveLength(3)
+    expect(store.categories[0].name).toBe('Hogar')
+    expect(store.isUsingDefaults).toBe(true)
     expect(consoleSpy).toHaveBeenCalled()
     consoleSpy.mockRestore()
   })
 
-  it('should handle addCategory error gracefully', async () => {
+  it('should handle addCategory error gracefully with local fallback', async () => {
     const { addDoc } = await import('firebase/firestore')
 
     // Arrange
@@ -115,13 +117,14 @@ describe('categories store', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const result = await store.addCategory('Fail Category')
 
-    // Assert
-    expect(store.categories).toHaveLength(0)
-    expect(result).toEqual({ error: 'Error al intentar agregar la categoría.' })
+    // Assert — adds locally even if Firestore fails
+    expect(store.categories).toHaveLength(1)
+    expect(store.categories[0].name).toBe('Fail Category')
+    expect(result).toEqual({ success: 'Categoría creada localmente.' })
     consoleSpy.mockRestore()
   })
 
-  it('should handle deleteCategory error gracefully', async () => {
+  it('should handle deleteCategory error gracefully with local removal', async () => {
     const { deleteDoc } = await import('firebase/firestore')
 
     // Arrange
@@ -132,9 +135,9 @@ describe('categories store', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const result = await store.deleteCategory('cat1')
 
-    // Assert
-    expect(store.categories).toHaveLength(1) // unchanged
-    expect(result).toEqual({ error: 'Error al intentar eliminar la categoría.' })
+    // Assert — removes locally even if Firestore fails
+    expect(store.categories).toHaveLength(0)
+    expect(result).toEqual({ success: "Categoría 'Cocina', eliminada localmente." })
     consoleSpy.mockRestore()
   })
 })

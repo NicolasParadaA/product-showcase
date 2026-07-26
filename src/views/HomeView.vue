@@ -15,7 +15,7 @@
             Bienvenido a Product Showcase
           </h1>
           <p class="text-subtitle-1 text-medium-emphasis">
-            Descubre nuestra selección de productos para cocina, hogar y jardín.
+            Descubre nuestra selección de productos como hogar, electrónica y más.
           </p>
         </section>
 

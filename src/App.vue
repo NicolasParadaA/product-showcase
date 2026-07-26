@@ -53,7 +53,7 @@
       <v-app-bar-title>
         <router-link
           to="/"
-          class="text-decoration-none"
+          class="text-decoration-none brand-link"
         >
           Product Showcase
         </router-link>
@@ -153,3 +153,12 @@ async function onLogout() {
   }
 }
 </script>
+
+<style>
+.brand-link,
+.brand-link:visited,
+.brand-link:hover,
+.brand-link:active {
+  color: inherit !important;
+}
+</style>
