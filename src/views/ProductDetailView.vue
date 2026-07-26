@@ -1,7 +1,8 @@
 <template>
   <v-container>
     <v-btn
-      variant="text"
+      variant="outlined"
+      color="primary"
       to="/products"
       class="mb-4"
     >
@@ -56,6 +57,8 @@
       </h2>
       <v-btn
         to="/products"
+        variant="outlined"
+        color="primary"
         class="mt-4"
       >
         Ver productos

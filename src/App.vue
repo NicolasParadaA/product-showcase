@@ -30,6 +30,13 @@
         </template>
         <template v-else>
           <v-list-item
+            v-if="isAdmin"
+            to="/admin/products"
+            title="Crud Productos"
+            prepend-icon="mdi-cog"
+            @click="drawer = false"
+          />
+          <v-list-item
             title="Logout"
             @click="onLogout"
           />
@@ -43,7 +50,9 @@
         class="d-md-none"
         @click="drawer = !drawer"
       />
-      <v-app-bar-title>Product Showcase</v-app-bar-title>
+      <v-app-bar-title>
+        <router-link to="/" class="text-decoration-none">Product Showcase</router-link>
+      </v-app-bar-title>
       <v-spacer />
 
       <!-- Desktop nav (hidden on mobile) -->
@@ -71,7 +80,7 @@
         </template>
 
         <template v-else>
-          <span>Hola, {{ displayName }}</span>
+          <span class="text-primary font-weight-medium">Hola, {{ displayName }}</span>
           <v-btn @click="onLogout">
             Logout
           </v-btn>

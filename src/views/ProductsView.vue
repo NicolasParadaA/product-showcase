@@ -55,6 +55,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
+import { normalizeText } from '@/utils/search.js'
 
 import { useProductsStore } from '@/stores/products.store'
 
@@ -76,9 +77,9 @@ const filterProducts = computed(() => {
   }
 
   if (filterName.value) {
-    let name = filterName.value.toLowerCase()
+    const name = normalizeText(filterName.value)
     productsFiltered = productsFiltered.filter((product) =>
-      product.name.toLowerCase().includes(name),
+      normalizeText(product.name).includes(name),
     )
   }
 
