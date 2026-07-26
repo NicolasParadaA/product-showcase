@@ -4,8 +4,6 @@ import { defineStore } from 'pinia'
 import { db } from '@/firebaseConfig.js'
 import { collection, addDoc, deleteDoc, doc, getDocs } from 'firebase/firestore'
 
-const SEED_CATEGORIES = ['Hogar', 'Cocina', 'Jardín']
-
 export const useCategoriesStore = defineStore('categories', () => {
   // State
   const categories = ref([])
@@ -13,22 +11,7 @@ export const useCategoriesStore = defineStore('categories', () => {
   // Actions
   async function fetchCategories() {
     const snap = await getDocs(collection(db, 'categories'))
-    const firestoreCategories = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
-
-    if (firestoreCategories.length === 0) {
-      // First load — seed initial categories
-      await seedInitialCategories()
-      const seeded = await getDocs(collection(db, 'categories'))
-      categories.value = seeded.docs.map((d) => ({ id: d.id, ...d.data() }))
-    } else {
-      categories.value = firestoreCategories
-    }
-  }
-
-  async function seedInitialCategories() {
-    for (const name of SEED_CATEGORIES) {
-      await addDoc(collection(db, 'categories'), { name })
-    }
+    categories.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
   }
 
   async function addCategory(name) {

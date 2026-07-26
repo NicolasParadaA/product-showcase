@@ -56,28 +56,17 @@ describe('categories store', () => {
     expect(store.categories[2]).toEqual({ id: 'cat3', name: 'Jardín' })
   })
 
-  it('should seed initial categories when Firestore is empty', async () => {
-    const { getDocs, addDoc } = await import('firebase/firestore')
+  it('should handle empty Firestore gracefully', async () => {
+    const { getDocs } = await import('firebase/firestore')
 
-    // Arrange — first call returns empty, second call returns seeded data
-    getDocs
-      .mockResolvedValueOnce({ docs: [] })
-      .mockResolvedValueOnce({
-        docs: [
-          { id: 's1', data: () => ({ name: 'Hogar' }) },
-          { id: 's2', data: () => ({ name: 'Cocina' }) },
-          { id: 's3', data: () => ({ name: 'Jardín' }) },
-        ],
-      })
-    addDoc.mockResolvedValue({ id: 'new-id' })
+    // Arrange — empty collection
+    getDocs.mockResolvedValue({ docs: [] })
 
     // Act
     await store.fetchCategories()
 
-    // Assert — seeded 3 categories
-    expect(addDoc).toHaveBeenCalledTimes(3)
-    expect(store.categories).toHaveLength(3)
-    expect(store.categories[0].name).toBe('Hogar')
+    // Assert — no seed, just empty
+    expect(store.categories).toHaveLength(0)
   })
 
   it('should add a category to Firestore and store', async () => {
@@ -119,7 +108,7 @@ describe('categories store', () => {
     // Arrange
     getDocs.mockRejectedValue(new Error('Firestore error'))
 
-    // Act & Assert — errors propagate, no silent fallback
+    // Act & Assert — errors propagate
     await expect(store.fetchCategories()).rejects.toThrow('Firestore error')
   })
 
