@@ -11,7 +11,9 @@
       <v-container>
         <!-- Welcome section -->
         <section class="text-center py-6">
-          <h1 class="text-h4 font-weight-bold mb-2">Bienvenido a Product Showcase</h1>
+          <h1 class="text-h4 font-weight-bold mb-2">
+            Bienvenido a Product Showcase
+          </h1>
           <p class="text-subtitle-1 text-medium-emphasis">
             Descubre nuestra selección de productos para cocina, hogar y jardín.
           </p>
@@ -23,10 +25,16 @@
           color="primary"
         />
 
-        <template v-for="(category, index) in categoriesStore.categories" :key="category.id">
+        <template
+          v-for="(category, index) in categoriesStore.categories"
+          :key="category.id"
+        >
           <section :id="category.name.toLowerCase()">
             <h2>Productos de {{ category.name }}</h2>
-            <ListProducts :products="productsStore.filterProductsByCategory(category.name)" from="home" />
+            <ListProducts
+              :products="productsStore.filterProductsByCategory(category.name)"
+              from="home"
+            />
           </section>
 
           <v-divider

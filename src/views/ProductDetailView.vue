@@ -45,7 +45,10 @@
       </v-row>
     </div>
 
-    <div v-else class="text-center py-16">
+    <div
+      v-else
+      class="text-center py-16"
+    >
       <v-icon
         size="64"
         color="grey"
@@ -69,11 +72,10 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useProductsStore } from '@/stores/products.store'
 
 const route = useRoute()
-const router = useRouter()
 const productsStore = useProductsStore()
 
 const product = computed(() => productsStore.findProduct(route.params.id))
@@ -92,10 +94,6 @@ const backRoute = computed(() => {
   }
   return { path: '/products', query }
 })
-
-function goBack() {
-  router.push(backRoute.value)
-}
 
 onMounted(async () => {
   if (productsStore.products.length === 0) {

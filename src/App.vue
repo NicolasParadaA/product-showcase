@@ -51,7 +51,12 @@
         @click="drawer = !drawer"
       />
       <v-app-bar-title>
-        <router-link to="/" class="text-decoration-none">Product Showcase</router-link>
+        <router-link
+          to="/"
+          class="text-decoration-none"
+        >
+          Product Showcase
+        </router-link>
       </v-app-bar-title>
       <v-spacer />
 

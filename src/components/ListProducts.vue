@@ -8,7 +8,10 @@
       md="4"
       lg="3"
     >
-      <ProductCard :product="product" :from="from" />
+      <ProductCard
+        :product="product"
+        :from="from"
+      />
     </v-col>
   </v-row>
 </template>

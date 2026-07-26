@@ -106,7 +106,10 @@
             >
               {{ cat.name }}
             </v-chip>
-            <span v-if="!categoriesStore.categories.length" class="text-medium-emphasis">
+            <span
+              v-if="!categoriesStore.categories.length"
+              class="text-medium-emphasis"
+            >
               No hay categorías registradas.
             </span>
           </div>
