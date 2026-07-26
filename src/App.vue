@@ -63,8 +63,8 @@ async function onLogout() {
     await logout()
     userStore.clearUser()
     router.push({ name: 'login' })
-  } catch (e) {
-    console.error(e)
+  } catch {
+    // logout failed silently
   }
 }
 </script>

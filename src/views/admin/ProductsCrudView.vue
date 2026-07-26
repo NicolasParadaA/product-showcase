@@ -1,6 +1,5 @@
 <template>
   <div>
-    <HeaderComp>CRUD de productos</HeaderComp>
     <v-container>
       <v-row justify="center">
         <v-col
@@ -99,7 +98,6 @@
 
 <script setup>
 document.title = 'CRUD Products'
-import HeaderComp from '@/components/layouts/HeaderComp.vue'
 import { onMounted, ref, computed } from 'vue'
 import Swal from 'sweetalert2'
 import { useProductsStore } from '@/stores/products.store'

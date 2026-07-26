@@ -96,8 +96,4 @@ async function onRegister() {
 }
 </script>
 
-<style scoped>
-.register-container {
-  display: none;
-}
-</style>
+

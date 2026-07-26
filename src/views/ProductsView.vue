@@ -1,6 +1,5 @@
 <template>
   <div>
-    <HeaderComp>Nuestros productos</HeaderComp>
     <v-container>
       <div>
         <p>
@@ -42,7 +41,6 @@
 </template>
 
 <script setup>
-import HeaderComp from '@/components/layouts/HeaderComp.vue'
 import { computed, onMounted, ref } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 
