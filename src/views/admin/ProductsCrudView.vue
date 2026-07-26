@@ -177,6 +177,7 @@ const addProduct = async () => {
 }
 
 const editProduct = async () => {
+  loading.value = true
   let respuesta = await productsStore.editProduct(
     name.value,
     image.value,
@@ -185,6 +186,7 @@ const editProduct = async () => {
     description.value,
     idProduct.value,
   )
+  loading.value = false
   if (respuesta.success) {
     Swal.fire({
       icon: 'success',

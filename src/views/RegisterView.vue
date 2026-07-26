@@ -48,6 +48,7 @@
               color="primary"
               size="large"
               block
+              :loading="loading"
             >
               Crear cuenta
             </v-btn>
@@ -77,6 +78,7 @@ const email = ref('')
 const password = ref('')
 const confirm = ref('')
 const error = ref('')
+const loading = ref(false)
 
 async function onRegister() {
   error.value = ''
@@ -84,6 +86,7 @@ async function onRegister() {
     error.value = 'Las contraseñas no coinciden'
     return
   }
+  loading.value = true
   try {
     await register(email.value, password.value, {
       firstname: firstname.value,
@@ -92,6 +95,8 @@ async function onRegister() {
     router.push('/')
   } catch (e) {
     error.value = e.message || 'Error al crear cuenta'
+  } finally {
+    loading.value = false
   }
 }
 </script>

@@ -4,10 +4,11 @@
     hover
   >
     <v-img
-      :src="product.image"
+      :src="imgSrc"
       :alt="product.name"
       aspect-ratio="3/2"
       height="200px"
+      @error="onImgError"
     />
     <v-card-title>{{ product.name }}</v-card-title>
     <v-card-text>
@@ -20,12 +21,21 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref } from 'vue'
+
+const props = defineProps({
   product: {
     type: Object,
     required: true,
   },
 })
+
+const fallback = 'https://placehold.co/300x200?text=Sin+imagen'
+const imgSrc = ref(props.product.image)
+
+function onImgError() {
+  imgSrc.value = fallback
+}
 </script>
 
 <style lang="css" scoped>

@@ -23,7 +23,19 @@
         <p>Cantidad de productos encontrados: {{ quantityProducts }}</p>
       </div>
       <section>
-        <v-row>
+        <v-row v-if="loadingProducts">
+          <v-col
+            v-for="n in 4"
+            :key="n"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
+            <v-skeleton-loader type="card" />
+          </v-col>
+        </v-row>
+        <v-row v-else>
           <v-col
             v-for="product in filterProducts"
             :key="product.id"
@@ -49,6 +61,7 @@ import { useProductsStore } from '@/stores/products.store'
 const productsStore = useProductsStore()
 
 const products = ref([])
+const loadingProducts = ref(true)
 
 const filterCategory = ref('')
 const filterName = ref('')
@@ -75,8 +88,10 @@ const filterProducts = computed(() => {
 const quantityProducts = computed(() => filterProducts.value.length)
 
 onMounted(async () => {
+  loadingProducts.value = true
   await productsStore.fetchProducts()
   products.value = productsStore.products
+  loadingProducts.value = false
 })
 </script>
 
