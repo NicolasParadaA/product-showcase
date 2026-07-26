@@ -306,8 +306,8 @@ const addCategory = async () => {
   const name = newCategoryName.value.trim()
   if (!name) return
 
-  const result = await categoriesStore.addCategory(name)
-  if (result.success) {
+  try {
+    const result = await categoriesStore.addCategory(name)
     Swal.fire({
       position: 'center',
       icon: 'success',
@@ -316,11 +316,11 @@ const addCategory = async () => {
       timer: 2000,
     })
     newCategoryName.value = ''
-  } else {
+  } catch (e) {
     Swal.fire({
       icon: 'error',
       title: 'Error!',
-      text: result.error,
+      text: 'No se pudo crear la categoría. Verifica tu conexión.',
     })
   }
 }
@@ -336,21 +336,33 @@ const deleteCategory = async (id, name) => {
     confirmButtonText: 'Sí, eliminar',
   }).then(async (result) => {
     if (result.isConfirmed) {
-      const respuesta = await categoriesStore.deleteCategory(id)
-      Swal.fire({
-        title: 'Eliminada',
-        text: respuesta.success,
-        icon: 'success',
-      })
+      try {
+        const respuesta = await categoriesStore.deleteCategory(id)
+        Swal.fire({
+          title: 'Eliminada',
+          text: respuesta.success,
+          icon: 'success',
+        })
+      } catch (e) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'No se pudo eliminar la categoría. Verifica tu conexión.',
+        })
+      }
     }
   })
 }
 
 onMounted(async () => {
-  await Promise.all([
-    productsStore.fetchProducts(),
-    categoriesStore.fetchCategories(),
-  ])
+  try {
+    await Promise.all([
+      productsStore.fetchProducts(),
+      categoriesStore.fetchCategories(),
+    ])
+  } catch (e) {
+    // Error handled by individual store actions
+  }
 })
 </script>
 

@@ -56,6 +56,30 @@ describe('categories store', () => {
     expect(store.categories[2]).toEqual({ id: 'cat3', name: 'Jardín' })
   })
 
+  it('should seed initial categories when Firestore is empty', async () => {
+    const { getDocs, addDoc } = await import('firebase/firestore')
+
+    // Arrange — first call returns empty, second call returns seeded data
+    getDocs
+      .mockResolvedValueOnce({ docs: [] })
+      .mockResolvedValueOnce({
+        docs: [
+          { id: 's1', data: () => ({ name: 'Hogar' }) },
+          { id: 's2', data: () => ({ name: 'Cocina' }) },
+          { id: 's3', data: () => ({ name: 'Jardín' }) },
+        ],
+      })
+    addDoc.mockResolvedValue({ id: 'new-id' })
+
+    // Act
+    await store.fetchCategories()
+
+    // Assert — seeded 3 categories
+    expect(addDoc).toHaveBeenCalledTimes(3)
+    expect(store.categories).toHaveLength(3)
+    expect(store.categories[0].name).toBe('Hogar')
+  })
+
   it('should add a category to Firestore and store', async () => {
     const { addDoc } = await import('firebase/firestore')
 
@@ -89,55 +113,36 @@ describe('categories store', () => {
     expect(result).toEqual({ success: "Categoría 'Cocina', eliminada correctamente." })
   })
 
-  it('should handle fetchCategories error gracefully with fallback defaults', async () => {
+  it('should propagate fetchCategories error', async () => {
     const { getDocs } = await import('firebase/firestore')
 
     // Arrange
     getDocs.mockRejectedValue(new Error('Firestore error'))
 
-    // Act
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    await store.fetchCategories()
-
-    // Assert — falls back to default categories
-    expect(store.categories).toHaveLength(3)
-    expect(store.categories[0].name).toBe('Hogar')
-    expect(store.isUsingDefaults).toBe(true)
-    expect(consoleSpy).toHaveBeenCalled()
-    consoleSpy.mockRestore()
+    // Act & Assert — errors propagate, no silent fallback
+    await expect(store.fetchCategories()).rejects.toThrow('Firestore error')
   })
 
-  it('should handle addCategory error gracefully with local fallback', async () => {
+  it('should propagate addCategory error', async () => {
     const { addDoc } = await import('firebase/firestore')
 
     // Arrange
-    addDoc.mockRejectedValue(new Error('Firestore error'))
+    addDoc.mockRejectedValue(new Error('Permission denied'))
 
-    // Act
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const result = await store.addCategory('Fail Category')
-
-    // Assert — adds locally even if Firestore fails
-    expect(store.categories).toHaveLength(1)
-    expect(store.categories[0].name).toBe('Fail Category')
-    expect(result).toEqual({ success: 'Categoría creada localmente.' })
-    consoleSpy.mockRestore()
+    // Act & Assert — errors propagate
+    await expect(store.addCategory('Fail')).rejects.toThrow('Permission denied')
+    expect(store.categories).toHaveLength(0)
   })
 
-  it('should handle deleteCategory error gracefully with local removal', async () => {
+  it('should propagate deleteCategory error', async () => {
     const { deleteDoc } = await import('firebase/firestore')
 
     // Arrange
     store.categories = [{ id: 'cat1', name: 'Cocina' }]
-    deleteDoc.mockRejectedValue(new Error('Firestore error'))
+    deleteDoc.mockRejectedValue(new Error('Permission denied'))
 
-    // Act
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const result = await store.deleteCategory('cat1')
-
-    // Assert — removes locally even if Firestore fails
-    expect(store.categories).toHaveLength(0)
-    expect(result).toEqual({ success: "Categoría 'Cocina', eliminada localmente." })
-    consoleSpy.mockRestore()
+    // Act & Assert — errors propagate
+    await expect(store.deleteCategory('cat1')).rejects.toThrow('Permission denied')
+    expect(store.categories).toHaveLength(1) // unchanged
   })
 })

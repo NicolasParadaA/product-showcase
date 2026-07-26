@@ -7,7 +7,14 @@
       size="64"
       class="ma-auto"
     />
-    <main>
+    <v-alert
+      v-else-if="error"
+      type="error"
+      class="ma-4"
+    >
+      {{ error }}
+    </v-alert>
+    <main v-else>
       <v-container>
         <!-- Welcome section -->
         <section class="text-center py-6">
@@ -58,13 +65,19 @@ import { onMounted, ref } from 'vue'
 const productsStore = useProductsStore()
 const categoriesStore = useCategoriesStore()
 const loading = ref(true)
+const error = ref('')
 
 onMounted(async () => {
-  await Promise.all([
-    productsStore.fetchProducts(),
-    categoriesStore.fetchCategories(),
-  ])
-  loading.value = false
+  try {
+    await Promise.all([
+      productsStore.fetchProducts(),
+      categoriesStore.fetchCategories(),
+    ])
+  } catch (e) {
+    error.value = 'Error al cargar los datos. Verifica tu conexión e intenta de nuevo.'
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
