@@ -98,20 +98,23 @@
         <v-card-title>Gestionar Categorías</v-card-title>
         <v-card-text>
           <div class="d-flex flex-wrap ga-2 mb-4">
-            <v-chip
+            <div
               v-for="cat in categoriesStore.categories"
               :key="cat.id"
+              class="d-flex align-center"
             >
-              {{ cat.name }}
-              <template #close>
-                <v-icon
-                  size="small"
-                  @click="confirmDeleteCategory(cat.id, cat.name)"
-                >
-                  mdi-close
-                </v-icon>
-              </template>
-            </v-chip>
+              <v-chip>
+                {{ cat.name }}
+              </v-chip>
+              <v-icon
+                size="small"
+                class="ml-1"
+                style="cursor: pointer"
+                @click="confirmDeleteCategory(cat.id, cat.name)"
+              >
+                mdi-close
+              </v-icon>
+            </div>
             <span
               v-if="!categoriesStore.categories.length"
               class="text-medium-emphasis"
