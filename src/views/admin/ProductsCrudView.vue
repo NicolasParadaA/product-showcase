@@ -101,10 +101,16 @@
             <v-chip
               v-for="cat in categoriesStore.categories"
               :key="cat.id"
-              closable
-              @click:close="deleteCategory(cat.id, cat.name)"
             >
               {{ cat.name }}
+              <template #close>
+                <v-icon
+                  size="small"
+                  @click="confirmDeleteCategory(cat.id, cat.name)"
+                >
+                  mdi-close
+                </v-icon>
+              </template>
             </v-chip>
             <span
               v-if="!categoriesStore.categories.length"
@@ -325,22 +331,36 @@ const addCategory = async () => {
   }
 }
 
-const deleteCategory = async (id, name) => {
-  Swal.fire({
-    title: `¿Eliminar categoría "${name}"?`,
-    text: 'Esta acción no se puede revertir.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Sí, eliminar',
-  }).then(async (result) => {
+const confirmDeleteCategory = async (id, categoryName) => {
+  // Check if there are products in this category
+  const productsInCategory = productsStore.products.filter(
+    (p) => p.category === categoryName,
+  )
+
+  if (productsInCategory.length > 0) {
+    // Category has products — double confirmation
+    const result = await Swal.fire({
+      title: `¿Eliminar categoría "${categoryName}"?`,
+      html: `Hay <strong>${productsInCategory.length}</strong> producto(s) en esta categoría.<br><br>Se eliminarán <strong>todos los productos</strong> de esta categoría también.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar todo',
+      cancelButtonText: 'Cancelar',
+    })
+
     if (result.isConfirmed) {
       try {
-        const respuesta = await categoriesStore.deleteCategory(id)
+        // Delete all products in this category first
+        for (const product of productsInCategory) {
+          await productsStore.deleteProduct(product.id, product.name)
+        }
+        // Then delete the category
+        await categoriesStore.deleteCategory(id)
         Swal.fire({
           title: 'Eliminada',
-          text: respuesta.success,
+          text: `Categoría "${categoryName}" y ${productsInCategory.length} producto(s) eliminados.`,
           icon: 'success',
         })
       } catch (e) {
@@ -351,7 +371,36 @@ const deleteCategory = async (id, name) => {
         })
       }
     }
-  })
+  } else {
+    // Category is empty — simple confirmation
+    const result = await Swal.fire({
+      title: `¿Eliminar categoría "${categoryName}"?`,
+      text: 'Esta categoría no tiene productos.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    })
+
+    if (result.isConfirmed) {
+      try {
+        await categoriesStore.deleteCategory(id)
+        Swal.fire({
+          title: 'Eliminada',
+          text: `Categoría "${categoryName}" eliminada.`,
+          icon: 'success',
+        })
+      } catch (e) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'No se pudo eliminar la categoría. Verifica tu conexión.',
+        })
+      }
+    }
+  }
 }
 
 onMounted(async () => {
