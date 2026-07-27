@@ -85,7 +85,13 @@
         </template>
 
         <template v-else>
-          <span class="text-primary font-weight-medium">Hola, {{ displayName }}</span>
+          <v-btn
+            variant="text"
+            disabled
+            class="text-primary font-weight-medium text-none"
+          >
+            Hola, {{ displayName }}
+          </v-btn>
           <v-btn @click="onLogout">
             Logout
           </v-btn>
