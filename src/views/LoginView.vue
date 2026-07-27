@@ -52,6 +52,14 @@
             </router-link>
           </p>
           <v-alert
+            type="info"
+            variant="tonal"
+            density="compact"
+            class="mt-3"
+          >
+            Para probar el CRUD usa: <strong>admin@admin.cl</strong> / <strong>admin123</strong>
+          </v-alert>
+          <v-alert
             v-if="error"
             type="error"
             class="mt-3"
