@@ -61,7 +61,7 @@
       <v-spacer />
 
       <!-- Desktop nav (hidden on mobile) -->
-      <div class="d-none d-md-flex">
+      <div class="d-none d-md-flex align-center">
         <v-btn to="/">
           Inicio
         </v-btn>
@@ -85,13 +85,9 @@
         </template>
 
         <template v-else>
-          <v-btn
-            variant="text"
-            disabled
-            class="text-primary font-weight-medium text-none"
-          >
+          <span class="text-primary font-weight-medium">
             Hola, {{ displayName }}
-          </v-btn>
+          </span>
           <v-btn @click="onLogout">
             Logout
           </v-btn>
