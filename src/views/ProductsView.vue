@@ -6,7 +6,7 @@
           Filtrar por categoria:
           <v-select
             v-model="filterCategory"
-            :items="productsStore.categories"
+            :items="categoriesStore.categories"
             item-title="name"
             item-value="name"
             label="Todas las Categorias"
@@ -66,9 +66,11 @@ import ProductCard from '@/components/ProductCard.vue'
 import { normalizeText } from '@/utils/search.js'
 
 import { useProductsStore } from '@/stores/products.store'
+import { useCategoriesStore } from '@/stores/categories.store'
 
 const route = useRoute()
 const productsStore = useProductsStore()
+const categoriesStore = useCategoriesStore()
 
 const products = ref([])
 const loadingProducts = ref(true)
@@ -99,7 +101,10 @@ const quantityProducts = computed(() => filterProducts.value.length)
 
 onMounted(async () => {
   loadingProducts.value = true
-  await productsStore.fetchProducts()
+  await Promise.all([
+    productsStore.fetchProducts(),
+    categoriesStore.fetchCategories(),
+  ])
   products.value = productsStore.products
   loadingProducts.value = false
 })
