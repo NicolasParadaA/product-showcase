@@ -42,7 +42,7 @@ git clone https://github.com/NicolasParada/product-showcase.git
 cd product-showcase
 
 # Instalar dependencias
-npm install
+pnpm install
 ```
 
 ## 🏃 Ejecutar el proyecto
@@ -97,6 +97,15 @@ src/
 ├── App.vue             # Componente principal
 └── main.js             # Entry point
 ```
+
+## 👤 Usuarios de prueba
+
+| Email | Contraseña | Rol | Permisos |
+|-------|-----------|-----|----------|
+| `admin@admin.cl` | `admin123` | Admin | CRUD de productos, gestión de categorías |
+| *(usuarios registrados)* | *(propios)* | User | Ver productos, buscar, filtrar |
+
+> **Nota:** El usuario admin puede acceder a `/admin/products` para crear, editar y eliminar productos y categorías. Los usuarios normales solo pueden navegar el catálogo.
 
 ## 🔐 Configuración de Firebase
 
