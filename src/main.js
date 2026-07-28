@@ -28,6 +28,7 @@ import router from './router'
 import { auth } from './firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from './stores/user.store'
+import { removeSpinner } from './utils/loading-spinner'
 
 // Resolve default theme from localStorage or system preference
 const savedTheme = localStorage.getItem('theme')
@@ -61,6 +62,7 @@ onAuthStateChanged(auth, async (firebaseUser) => {
     if (!mounted) {
       app.mount('#app')
       mounted = true
+      removeSpinner()
     }
     return
   }
@@ -76,6 +78,7 @@ onAuthStateChanged(auth, async (firebaseUser) => {
   if (!mounted) {
     app.mount('#app')
     mounted = true
+    removeSpinner()
   }
 })
 
@@ -84,6 +87,7 @@ setTimeout(() => {
   if (!mounted) {
     app.mount('#app')
     mounted = true
+    removeSpinner()
   }
 }, 3000)
 
