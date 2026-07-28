@@ -49,13 +49,12 @@ router.beforeEach(async (to, _from) => {
 
   const userStore = useUserStore()
 
-  // On fresh page load, auth.currentUser is null because Firebase hasn't
-  // restored the session from IndexedDB yet. The store is also empty.
-  // Wait for the REAL auth state before making a redirect decision.
+  // Wait for Firebase to resolve auth state from IndexedDB.
+  // On fresh page load, auth.currentUser is null until Firebase reads IndexedDB.
   if (!auth.currentUser && !userStore.isAuthenticated) {
     await new Promise((resolve) => {
-      let callbackCount = 0
       let done = false
+      let callbackCount = 0
       const finish = () => {
         if (!done) {
           done = true
@@ -63,28 +62,27 @@ router.beforeEach(async (to, _from) => {
           resolve()
         }
       }
-      // Don't wait forever — Firebase usually restores in <500 ms.
-      const timer = setTimeout(finish, 1000)
+      // 2s timeout — Firebase usually restores in <500 ms
+      const timer = setTimeout(finish, 2000)
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         callbackCount++
         if (user) {
-          // Real user received — populate store and resolve.
+          // Real user received — populate store and resolve
           userStore.setUserFromAuth(user)
           finish()
           unsubscribe()
         } else if (callbackCount >= 2) {
-          // Second null callback confirms there is no session.
+          // 2nd null callback confirms there is no session
           finish()
           unsubscribe()
         }
-        // First null callback: keep waiting for the 2nd.
+        // 1st null callback: keep waiting for the 2nd
       })
     })
   }
 
-  // Re-read after the wait — the store or auth.currentUser may have been set.
+  // Re-read after the wait
   const firebaseUser = auth.currentUser
-
   if (firebaseUser && !userStore.user) {
     await userStore.setUserFromAuth(firebaseUser)
   }
