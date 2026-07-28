@@ -54,7 +54,11 @@ let mounted = false
 
 function mountApp() {
   if (mounted) return
-  app.mount('#app')
+  try {
+    app.mount('#app')
+  } catch (e) {
+    console.error('Vue mount failed, forcing spinner removal:', e)
+  }
   mounted = true
   removeSpinner()
 }
