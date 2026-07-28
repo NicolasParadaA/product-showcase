@@ -56,22 +56,24 @@ router.beforeEach(async (to, _from) => {
     return true
   }
 
-  // On fresh page load, auth.currentUser is null until Firebase reads IndexedDB.
-  // Poll for auth.currentUser to become non-null (max 3s).
-  if (!auth.currentUser) {
-    const start = Date.now()
-    while (!auth.currentUser && Date.now() - start < 3000) {
+  // On fresh page load, main.js calls setUserFromAuth() which fires an
+  // async Firestore request. We must wait for THAT request to complete
+  // (not start our own). Poll for the store to be populated.
+  const start = Date.now()
+  while (Date.now() - start < 5000) {
+    // Store populated by main.js — we're good
+    if (userStore.isAuthenticated) break
+    // auth.currentUser exists but store still empty — main.js is still
+    // fetching the Firestore profile. Wait a bit more.
+    if (auth.currentUser) {
       await new Promise((r) => setTimeout(r, 50))
+      continue
     }
+    // auth.currentUser is null — Firebase hasn't restored yet. Wait.
+    await new Promise((r) => setTimeout(r, 50))
   }
 
-  // Populate store from auth.currentUser if available
-  const firebaseUser = auth.currentUser
-  if (firebaseUser && !userStore.user) {
-    await userStore.setUserFromAuth(firebaseUser)
-  }
-
-  const isAuth = userStore.isAuthenticated || !!firebaseUser
+  const isAuth = userStore.isAuthenticated || !!auth.currentUser
 
   if (requiresAuth && !isAuth) {
     return { name: 'login' }
