@@ -43,17 +43,16 @@ router.beforeEach(async (to, _from) => {
   const requiresAuth = to.meta?.requiresAuth
   const requiresRole = to.meta?.requiresRole
 
+  // Fast path: public routes need no auth check
+  if (!requiresAuth && !requiresRole) return true
+
   const userStore = useUserStore()
 
-  // ensure we know the current auth state before guarding
-  const firebaseUser = await new Promise((resolve) => {
-    const unsubscribe = auth.onAuthStateChanged((u) => {
-      unsubscribe()
-      resolve(u)
-    })
-  })
+  // auth.currentUser is a synchronous in-memory property.
+  // It survives bfcache because it's part of the frozen JS heap.
+  const firebaseUser = auth.currentUser
 
-  // ensure store has profile data when user is logged in
+  // Ensure the Pinia store has the full Firestore profile
   if (firebaseUser && !userStore.user) {
     await userStore.setUserFromAuth(firebaseUser)
   }

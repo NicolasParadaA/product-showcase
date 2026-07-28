@@ -58,3 +58,11 @@ onAuthStateChanged(auth, async (firebaseUser) => {
     mounted = true
   }
 })
+
+// Re-sync the user store after bfcache restoration.
+// onAuthStateChanged may fire with null during restoration, clearing the store.
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted && auth.currentUser) {
+    userStore.setUserFromAuth(auth.currentUser)
+  }
+})
