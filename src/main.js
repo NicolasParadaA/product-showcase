@@ -50,8 +50,15 @@ app.use(vuetify)
 
 const userStore = useUserStore()
 let mounted = false
+let restoringFromBfcache = false
 
 onAuthStateChanged(auth, async (firebaseUser) => {
+  // During bfcache restoration, onAuthStateChanged may fire with null
+  // BEFORE Firebase has finished re-validating the session.
+  // Ignore that intermediate null and wait for the real result.
+  if (restoringFromBfcache && firebaseUser === null) {
+    return
+  }
   await userStore.setUserFromAuth(firebaseUser)
   if (!mounted) {
     app.mount('#app')
@@ -60,9 +67,32 @@ onAuthStateChanged(auth, async (firebaseUser) => {
 })
 
 // Re-sync the user store after bfcache restoration.
-// onAuthStateChanged may fire with null during restoration, clearing the store.
+// Firebase may not have finished restoring the session at pageshow time,
+// so we retry with a short delay until auth.currentUser becomes available.
 window.addEventListener('pageshow', (e) => {
-  if (e.persisted && auth.currentUser) {
-    userStore.setUserFromAuth(auth.currentUser)
+  if (!e.persisted) return
+
+  restoringFromBfcache = true
+  const currentUser = auth.currentUser
+
+  if (currentUser) {
+    userStore.setUserFromAuth(currentUser)
+  } else {
+    // Firebase hasn't restored the session yet — poll briefly.
+    let attempts = 0
+    const interval = setInterval(() => {
+      attempts++
+      const user = auth.currentUser
+      if (user || attempts >= 20) { // max ~2 seconds
+        clearInterval(interval)
+        restoringFromBfcache = false
+        if (user) {
+          userStore.setUserFromAuth(user)
+        }
+      }
+    }, 100)
   }
+
+  // Safety: clear the flag after a timeout even if auth never resolves.
+  setTimeout(() => { restoringFromBfcache = false }, 3000)
 })
