@@ -48,17 +48,43 @@ app.use(createPinia())
 app.use(router)
 app.use(vuetify)
 
+// --- bfcache detection via pagehide + sessionStorage ---
+// pagehide fires synchronously BEFORE the page is stored in bfcache,
+// so sessionStorage persists across the restoration. This is the only
+// reliable way to know we are restoring from bfcache, because
+// onAuthStateChanged may fire BEFORE pageshow.
+window.addEventListener('pagehide', () => {
+  sessionStorage.setItem('__bfcache_pending', '1')
+})
+const isBfcacheRestore = sessionStorage.getItem('__bfcache_pending') === '1'
+if (isBfcacheRestore) {
+  sessionStorage.removeItem('__bfcache_pending')
+}
+
 const userStore = useUserStore()
 let mounted = false
-let restoringFromBfcache = false
+let authCallbackCount = 0
 
 onAuthStateChanged(auth, async (firebaseUser) => {
-  // During bfcache restoration, onAuthStateChanged may fire with null
-  // BEFORE Firebase has finished re-validating the session.
-  // Ignore that intermediate null and wait for the real result.
-  if (restoringFromBfcache && firebaseUser === null) {
+  authCallbackCount++
+
+  // 1) BFCACHE: block the intermediate null that Firebase fires while
+  //    re-validating the session. The store keeps its frozen value.
+  if (isBfcacheRestore && firebaseUser === null) {
+    if (!mounted) {
+      app.mount('#app')
+      mounted = true
+    }
     return
   }
+
+  // 2) FRESH LOAD: the first onAuthStateChanged callback is always null
+  //    (Firebase is still reading from IndexedDB). Don't mount yet —
+  //    wait for the 2nd callback which carries the real auth state.
+  if (!firebaseUser && authCallbackCount < 2 && !mounted) {
+    return
+  }
+
   await userStore.setUserFromAuth(firebaseUser)
   if (!mounted) {
     app.mount('#app')
@@ -66,33 +92,21 @@ onAuthStateChanged(auth, async (firebaseUser) => {
   }
 })
 
-// Re-sync the user store after bfcache restoration.
-// Firebase may not have finished restoring the session at pageshow time,
-// so we retry with a short delay until auth.currentUser becomes available.
+// Safety: mount after 3 s even if auth never resolves (offline / config error).
+setTimeout(() => {
+  if (!mounted) {
+    app.mount('#app')
+    mounted = true
+  }
+}, 3000)
+
+// After bfcache restoration, re-sync from auth.currentUser in case
+// onAuthStateChanged didn't fire with the user (Firebase may consider
+// the in-memory state already correct and skip the callback).
 window.addEventListener('pageshow', (e) => {
   if (!e.persisted) return
-
-  restoringFromBfcache = true
-  const currentUser = auth.currentUser
-
-  if (currentUser) {
-    userStore.setUserFromAuth(currentUser)
-  } else {
-    // Firebase hasn't restored the session yet — poll briefly.
-    let attempts = 0
-    const interval = setInterval(() => {
-      attempts++
-      const user = auth.currentUser
-      if (user || attempts >= 20) { // max ~2 seconds
-        clearInterval(interval)
-        restoringFromBfcache = false
-        if (user) {
-          userStore.setUserFromAuth(user)
-        }
-      }
-    }, 100)
+  const user = auth.currentUser
+  if (user) {
+    userStore.setUserFromAuth(user)
   }
-
-  // Safety: clear the flag after a timeout even if auth never resolves.
-  setTimeout(() => { restoringFromBfcache = false }, 3000)
 })

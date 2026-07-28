@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user.store'
 import { auth } from '@/firebaseConfig'
+import { onAuthStateChanged } from 'firebase/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,11 +49,42 @@ router.beforeEach(async (to, _from) => {
 
   const userStore = useUserStore()
 
-  // auth.currentUser is a synchronous in-memory property.
-  // It survives bfcache because it's part of the frozen JS heap.
+  // On fresh page load, auth.currentUser is null because Firebase hasn't
+  // restored the session from IndexedDB yet. The store is also empty.
+  // Wait for the REAL auth state before making a redirect decision.
+  if (!auth.currentUser && !userStore.isAuthenticated) {
+    await new Promise((resolve) => {
+      let callbackCount = 0
+      let done = false
+      const finish = () => {
+        if (!done) {
+          done = true
+          clearTimeout(timer)
+          resolve()
+        }
+      }
+      // Don't wait forever — Firebase usually restores in <500 ms.
+      const timer = setTimeout(finish, 1000)
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        callbackCount++
+        if (user) {
+          // Real user received — populate store and resolve.
+          userStore.setUserFromAuth(user)
+          finish()
+          unsubscribe()
+        } else if (callbackCount >= 2) {
+          // Second null callback confirms there is no session.
+          finish()
+          unsubscribe()
+        }
+        // First null callback: keep waiting for the 2nd.
+      })
+    })
+  }
+
+  // Re-read after the wait — the store or auth.currentUser may have been set.
   const firebaseUser = auth.currentUser
 
-  // Ensure the Pinia store has the full Firestore profile
   if (firebaseUser && !userStore.user) {
     await userStore.setUserFromAuth(firebaseUser)
   }
