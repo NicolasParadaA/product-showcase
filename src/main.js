@@ -53,16 +53,26 @@ let mounted = false
 let authCallbackCount = 0
 
 onAuthStateChanged(auth, async (firebaseUser) => {
-  authCallbackCount++
+  // Real user received — mount immediately (don't wait for a 2nd callback).
+  // Firebase may fire the user on the 1st callback if IndexedDB is already
+  // restored, or on the 2nd after a null→user transition.
+  if (firebaseUser) {
+    await userStore.setUserFromAuth(firebaseUser)
+    if (!mounted) {
+      app.mount('#app')
+      mounted = true
+    }
+    return
+  }
 
-  // Wait for the 2nd callback (Firebase's real auth state).
-  // The 1st is always null (before IndexedDB read).
-  // The 2nd carries the real user or confirms no session.
+  // Null callback — wait for the next one which may carry the real user.
+  authCallbackCount++
   if (authCallbackCount < 2 && !mounted) {
     return
   }
 
-  await userStore.setUserFromAuth(firebaseUser)
+  // Confirmed no session — mount anyway so the app is usable (public routes).
+  await userStore.setUserFromAuth(null)
   if (!mounted) {
     app.mount('#app')
     mounted = true

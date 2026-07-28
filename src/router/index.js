@@ -64,11 +64,11 @@ router.beforeEach(async (to, _from) => {
       }
       // 2s timeout — Firebase usually restores in <500 ms
       const timer = setTimeout(finish, 2000)
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
         callbackCount++
         if (user) {
           // Real user received — populate store and resolve
-          userStore.setUserFromAuth(user)
+          await userStore.setUserFromAuth(user)
           finish()
           unsubscribe()
         } else if (callbackCount >= 2) {
