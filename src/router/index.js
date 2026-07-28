@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user.store'
 import { auth } from '@/firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,39 +48,24 @@ router.beforeEach(async (to, _from) => {
 
   const userStore = useUserStore()
 
-  // Wait for Firebase to resolve auth state from IndexedDB.
-  // On fresh page load, auth.currentUser is null until Firebase reads IndexedDB.
-  if (!auth.currentUser && !userStore.isAuthenticated) {
-    await new Promise((resolve) => {
-      let done = false
-      let callbackCount = 0
-      const finish = () => {
-        if (!done) {
-          done = true
-          clearTimeout(timer)
-          resolve()
-        }
-      }
-      // 2s timeout — Firebase usually restores in <500 ms
-      const timer = setTimeout(finish, 2000)
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        callbackCount++
-        if (user) {
-          // Real user received — populate store and resolve
-          await userStore.setUserFromAuth(user)
-          finish()
-          unsubscribe()
-        } else if (callbackCount >= 2) {
-          // 2nd null callback confirms there is no session
-          finish()
-          unsubscribe()
-        }
-        // 1st null callback: keep waiting for the 2nd
-      })
-    })
+  // If the store already has the user, no need to wait
+  if (userStore.isAuthenticated) {
+    if (requiresRole && userStore.user?.role !== requiresRole) {
+      return { name: 'home' }
+    }
+    return true
   }
 
-  // Re-read after the wait
+  // On fresh page load, auth.currentUser is null until Firebase reads IndexedDB.
+  // Poll for auth.currentUser to become non-null (max 3s).
+  if (!auth.currentUser) {
+    const start = Date.now()
+    while (!auth.currentUser && Date.now() - start < 3000) {
+      await new Promise((r) => setTimeout(r, 50))
+    }
+  }
+
+  // Populate store from auth.currentUser if available
   const firebaseUser = auth.currentUser
   if (firebaseUser && !userStore.user) {
     await userStore.setUserFromAuth(firebaseUser)
