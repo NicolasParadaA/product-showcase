@@ -56,23 +56,16 @@ router.beforeEach(async (to, _from) => {
     return true
   }
 
-  // On fresh page load, main.js calls setUserFromAuth() which fires an
-  // async Firestore request. We must wait for THAT request to complete
-  // (not start our own). Poll for the store to be populated.
+  // main.js fires setUserFromAuth() fire-and-forget on every auth callback.
+  // The Firestore request may still be in-flight. Poll for the store to be
+  // populated (max 3 s) — don't create our own listener.
   const start = Date.now()
-  while (Date.now() - start < 5000) {
-    // Store populated by main.js — we're good
+  while (Date.now() - start < 3000) {
     if (userStore.isAuthenticated) break
-    // auth.currentUser exists but store still empty — main.js is still
-    // fetching the Firestore profile. Wait a bit more.
-    if (auth.currentUser) {
-      await new Promise((r) => setTimeout(r, 50))
-      continue
-    }
-    // auth.currentUser is null — Firebase hasn't restored yet. Wait.
     await new Promise((r) => setTimeout(r, 50))
   }
 
+  // After polling, check auth via store or fallback to auth.currentUser
   const isAuth = userStore.isAuthenticated || !!auth.currentUser
 
   if (requiresAuth && !isAuth) {

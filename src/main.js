@@ -51,45 +51,29 @@ app.use(vuetify)
 
 const userStore = useUserStore()
 let mounted = false
-let authCallbackCount = 0
 
-onAuthStateChanged(auth, async (firebaseUser) => {
-  // Real user received — mount immediately (don't wait for a 2nd callback).
-  // Firebase may fire the user on the 1st callback if IndexedDB is already
-  // restored, or on the 2nd after a null→user transition.
+function mountApp() {
+  if (mounted) return
+  app.mount('#app')
+  mounted = true
+  removeSpinner()
+}
+
+onAuthStateChanged(auth, (firebaseUser) => {
+  // Fire-and-forget: populate the store in the background.
+  // Don't block app mount on Firestore — the router guard handles auth gating.
   if (firebaseUser) {
-    await userStore.setUserFromAuth(firebaseUser)
-    if (!mounted) {
-      app.mount('#app')
-      mounted = true
-      removeSpinner()
-    }
-    return
+    userStore.setUserFromAuth(firebaseUser)
+  } else {
+    userStore.setUserFromAuth(null)
   }
 
-  // Null callback — wait for the next one which may carry the real user.
-  authCallbackCount++
-  if (authCallbackCount < 2 && !mounted) {
-    return
-  }
-
-  // Confirmed no session — mount anyway so the app is usable (public routes).
-  await userStore.setUserFromAuth(null)
-  if (!mounted) {
-    app.mount('#app')
-    mounted = true
-    removeSpinner()
-  }
+  // Mount on ANY auth callback — real user or confirmed null.
+  mountApp()
 })
 
-// Safety: mount after 3 s even if auth never resolves (offline / config error).
-setTimeout(() => {
-  if (!mounted) {
-    app.mount('#app')
-    mounted = true
-    removeSpinner()
-  }
-}, 3000)
+// Safety: mount after 1.5 s even if auth never resolves (offline / config error).
+setTimeout(mountApp, 1500)
 
 window.addEventListener('pageshow', (e) => {
   if (!e.persisted) return // Only for bfcache, NOT F5
